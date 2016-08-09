@@ -33,6 +33,7 @@
                     android:background="#ffb3b3"
                     android:textColor="#FFFFFF"/>
                 <EditText
+                    android:id="@+id/mem_id"
                     android:layout_marginTop="2dp"
                     android:layout_marginLeft="5dp"
                     android:layout_height="match_parent"
@@ -51,6 +52,7 @@
                     android:background="#ffb3b3"
                     android:textColor="#FFFFFF"/>
                 <EditText
+                    android:id="@+id/mem_pwd"
                     android:layout_marginTop="2dp"
                     android:layout_marginLeft="5dp"
                     android:layout_height="match_parent"
@@ -64,6 +66,7 @@
                 android:layout_weight="1.5"
                 >
                 <Button
+                    android:id="@+id/mem_login"
                     android:layout_marginTop="5dp"
                     android:text="Login"
                     android:textSize="25sp"
@@ -72,10 +75,12 @@
                     android:layout_weight="1"
                     android:textColor="@color/txt_color01"
                     android:background="@drawable/kdy02_color"/>
+
                 <Button
+                    android:id="@+id/mem_join"
                     android:layout_marginTop="5dp"
                     android:layout_marginLeft="5dp"
-                    android:text="Cancel"
+                    android:text="Join"
                     android:textSize="25sp"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
