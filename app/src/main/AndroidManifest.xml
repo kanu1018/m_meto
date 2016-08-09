@@ -18,9 +18,9 @@
 
         <activity android:name=".meto_MainActivity"></activity>
 
-        <activity android:name=".SharePlanActivity"></activity>
+        <activity android:name=".CreateCalendar"></activity>
 
-        <activity android:name=".CreateCalendar">
+        <activity android:name=".SharePlanActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
