@@ -20,7 +20,7 @@
 
         <activity android:name=".SharePlanActivity"></activity>
 
-        <activity android:name=".CreateCalendar">
+        <activity android:name=".SearchByCategory">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
