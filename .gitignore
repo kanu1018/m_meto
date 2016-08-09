@@ -68,6 +68,7 @@ captures/
 ### Android Patch ###
 gen-external-apklibs
 
+.idea/
 
 ### Java ###
 *.class
