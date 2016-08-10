@@ -23,7 +23,7 @@
         <activity android:name=".Login_ok"></activity>
         <activity android:name=".MemLog"></activity>
 
-        
+
 
         <activity android:name=".SharePlanActivity"></activity>
 
