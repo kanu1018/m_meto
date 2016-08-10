@@ -1,13 +1,12 @@
 package com.kitri.meto.m.metour;
 
-import android.content.Context;
+import android.app.Activity;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import org.apache.http.HttpResponse;
@@ -24,43 +23,36 @@ import java.util.List;
 /**
  * Created by Administrator on 2016-08-08.
  */
-public class AddSubPlan extends LinearLayout implements View.OnClickListener {
+public class AddSubPlan extends Activity implements View.OnClickListener {
     EditText title, place, memo;
     Spinner start_time, end_time, mission;
     Button ok, cancel;
-    Context context;
 
-    public AddSubPlan(Context context){
-        super(context);
-        excute(context);
-    }
-
-    private void excute(Context context){
-        this.context = context;
-        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.addsubplan, this, true);
+   protected void onCreate(Bundle savedInstanceState) {
+       super.onCreate(savedInstanceState);
+       setContentView(R.layout.addsubplan);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        title = (EditText)findViewById(R.id.add_subplan_title);
-        place = (EditText)findViewById(R.id.add_subplan_place);
-        memo = (EditText)findViewById(R.id.add_subplan_memo);
-        start_time = (Spinner)findViewById(R.id.add_subplan_starttime);
-        end_time = (Spinner)findViewById(R.id.add_subplan_endtime);
-        mission = (Spinner)findViewById(R.id.add_subplan_mission);
+        title = (EditText) findViewById(R.id.add_subplan_title);
+        place = (EditText) findViewById(R.id.add_subplan_place);
+        memo = (EditText) findViewById(R.id.add_subplan_memo);
+        start_time = (Spinner) findViewById(R.id.add_subplan_starttime);
+        end_time = (Spinner) findViewById(R.id.add_subplan_endtime);
+        mission = (Spinner) findViewById(R.id.add_subplan_mission);
 
-        ok = (Button)findViewById(R.id.add_subplan);
-        cancel = (Button)findViewById(R.id.add_subplan_cancel);
+        ok = (Button) findViewById(R.id.add_subplan);
+        cancel = (Button) findViewById(R.id.add_subplan_cancel);
         ok.setOnClickListener(this);
         cancel.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.add_subplan){
+        if (v.getId() == R.id.add_subplan) {
             String main_num = "77";
-            String requestURL = "http://192.168.14.45:8805/meto/and/subplan/addok.do?main_num="+main_num;
+            String requestURL = "http://192.168.14.45:8805/meto/and/subplan/addok.do";
 
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
@@ -68,11 +60,11 @@ public class AddSubPlan extends LinearLayout implements View.OnClickListener {
 
             String tmp = mission.getSelectedItem().toString();
             String mission_chk = null;
-            if(tmp.equals("미션 선택안함")){
+            if (tmp.equals("미션 선택안함")) {
                 mission_chk = "n";
-            }else if(tmp.equals("명소 찾아가기")){
+            } else if (tmp.equals("명소 찾아가기")) {
                 mission_chk = "g";
-            }else if(tmp.equals("명소 사진찍기")){
+            } else if (tmp.equals("명소 사진찍기")) {
                 mission_chk = "p";
             }
 
@@ -87,12 +79,12 @@ public class AddSubPlan extends LinearLayout implements View.OnClickListener {
             try {
                 post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
                 HttpResponse response = client.execute(post);
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.d("sendPost == >", e.toString());
             }
 
-        }else if(v.getId() == R.id.add_subplan_cancel){
-
+        } else if (v.getId() == R.id.add_subplan_cancel) {
+            finish();
         }
     }
 }
