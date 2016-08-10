@@ -32,9 +32,9 @@ import java.util.List;
  * Created by Administrator on 2016-08-08.
  */
 public class EditSubPlan extends Activity implements View.OnClickListener {
-    EditText title, place, memo;
+    EditText title, place, memo, photo;
     Spinner start_time, end_time, mission;
-    Button ok, cancel;
+    Button ok, cancel, del;
     int subNum;
 
     SubPlanDTO dto;
@@ -52,11 +52,14 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
         start_time = (Spinner) findViewById(R.id.edit_subplan_starttime);
         end_time = (Spinner) findViewById(R.id.edit_subplan_endtime);
         mission = (Spinner) findViewById(R.id.edit_subplan_mission);
+        photo = (EditText)findViewById(R.id.edit_subplan_photo);
 
         ok = (Button) findViewById(R.id.edit_subplan);
         cancel = (Button) findViewById(R.id.edit_subplan_cancel);
+        del = (Button)findViewById(R.id.edit_subplan_del);
         ok.setOnClickListener(this);
         cancel.setOnClickListener(this);
+        del.setOnClickListener(this);
 
         Intent intent = getIntent();
         subNum = intent.getIntExtra("subNum", subNum);
@@ -95,6 +98,7 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
                 index = 2;
             }
             mission.setSelection(index);
+            photo.setText(dto.getPhoto());
         }catch (Exception e){
             Log.d("sendPost == >", e.toString());
 
@@ -105,7 +109,7 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         if (v.getId() == R.id.edit_subplan) {
             String main_num = "77";
-            String requestURL = "http://192.168.14.45:8805/meto/and/subplan/editok.do";
+            String requestURL = "http://192.168.14.45:8805/meto/and/subplan/edit.do";
 
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
@@ -121,13 +125,38 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
                 mission_chk = "p";
             }
 
-            paramList.add(new BasicNameValuePair("main_num", main_num));
             paramList.add(new BasicNameValuePair("sub_title", title.getText().toString()));
             paramList.add(new BasicNameValuePair("start_time", start_time.getSelectedItem().toString()));
             paramList.add(new BasicNameValuePair("end_time", end_time.getSelectedItem().toString()));
             paramList.add(new BasicNameValuePair("place", place.getText().toString()));
             paramList.add(new BasicNameValuePair("mission", mission_chk));
             paramList.add(new BasicNameValuePair("memo", memo.getText().toString()));
+            paramList.add(new BasicNameValuePair("photo", photo.getText().toString()));
+            paramList.add(new BasicNameValuePair("sub_num", String.valueOf(subNum)));
+            paramList.add(new BasicNameValuePair("main_num", main_num));
+
+            try {
+                post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
+                HttpResponse response = client.execute(post);
+            } catch (Exception e) {
+                Log.d("sendPost == >", e.toString());
+            }
+            finish();
+            Intent intent = new Intent(getApplicationContext(), ListSubplan.class);
+            startActivity(intent);
+        } else if (v.getId() == R.id.edit_subplan_cancel) {
+            finish();
+            Intent intent = new Intent(getApplicationContext(), ListSubplan.class);
+            startActivity(intent);
+        } else if(v.getId() == R.id.edit_subplan_del){
+            String requestURL = "http://192.168.14.45:8805/meto/and/subplan/del.do";
+
+            String main_num = "77";
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(requestURL);
+            List<NameValuePair> paramList = new ArrayList<>();
+            paramList.add(new BasicNameValuePair("subnum", String.valueOf(subNum)));
+            paramList.add(new BasicNameValuePair("mainnum", main_num));
 
             try {
                 post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
@@ -136,8 +165,9 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
                 Log.d("sendPost == >", e.toString());
             }
 
-        } else if (v.getId() == R.id.edit_subplan_cancel) {
             finish();
+            Intent intent = new Intent(getApplicationContext(), ListSubplan.class);
+            startActivity(intent);
         }
     }
 
