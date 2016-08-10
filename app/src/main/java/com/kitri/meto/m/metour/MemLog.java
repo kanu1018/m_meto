@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -16,7 +17,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -33,6 +33,7 @@ public class MemLog extends Activity{
     Button btnLogin,btnJoin;
     String vId,vPwd;
     boolean flag;
+    public CookieManager cookieManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +53,8 @@ public class MemLog extends Activity{
                 vPwd = edtPwd.getText().toString();
                 String requestURL =  "http://192.168.14.19:8805/meto/and/member/login.do";
 
-                HttpClient client   = new DefaultHttpClient();
+                //HttpClient client   = new DefaultHttpClient();
+                HttpClient client   = SessionControl.getHttpclient();
                 HttpPost post    = new HttpPost(requestURL);
                 List<NameValuePair> paramList = new ArrayList<>();
 
@@ -62,6 +64,10 @@ public class MemLog extends Activity{
                 try {
                     post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
                     HttpResponse response = client.execute(post);
+
+                    ///////////////////////
+                    SessionControl.cookies = SessionControl.httpclient.getCookieStore().getCookies();
+                    //////////////////////
                     HttpEntity entity = response.getEntity();
                     InputStream is = entity.getContent();
                     flag = getXMLFlag(is);
