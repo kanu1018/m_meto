@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,24 +16,42 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 public class CameraActivity extends AppCompatActivity implements View.OnClickListener{
-    private Button btn;
+    private Button btn,btntrans;
     private ImageView imgv;
     final int REQ_CODE_SELECT_IMAGE=100;
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.camera_layout);
         btn = (Button)findViewById(R.id.button);
+        btntrans=(Button)findViewById(R.id.btntrans);
         imgv=(ImageView)findViewById(R.id.iv);
 
         btn.setOnClickListener(this);
+        btntrans.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doInBackground();
+            }
+        });
+
 
         /*btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,7 +65,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         Toast.makeText(getBaseContext(), "resultCode : "+resultCode,Toast.LENGTH_SHORT).show();
-
+        String sdcard = Environment.getExternalStorageDirectory().getPath();
         if(requestCode == REQ_CODE_SELECT_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
                 try {
@@ -61,9 +80,26 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                     imgv.setImageBitmap(image_bitmap);
 
 
-                    Toast.makeText(getBaseContext(), "name_Str : "+name_Str , Toast.LENGTH_SHORT).show();
+                    /*Toast.makeText(getBaseContext(), "name_Str : " + name_Str, Toast.LENGTH_SHORT).show();
+                    HttpClient client = new DefaultHttpClient();
+                    String url = "http://175.210.155.212:8080/diary_server/getMultipart.jsp"; //바꿔야함
+                    HttpPost post = new HttpPost(url);
+
+                    // FileBody 객체를 이용해서 파일을 받아옴
+
+                    File glee = new File(sdcard + "/glee.jpg");
+                    FileBody bin = new FileBody(glee);
 
 
+                    MultipartEntityBuilder multipart = MultipartEntityBuilder.create();
+                    multipart.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+                    multipart.addPart("images", bin); //실제 파일을 multipart에 넣는다.
+
+                    post.setEntity((HttpEntity) multipart); // Multipart를 post 형식에 담음
+                    client.execute(post);    // post 형식의 데이터를 서버로 전달*/
+
+
+                    Toast.makeText(getApplicationContext(),doInBackground(),Toast.LENGTH_SHORT).show();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -74,6 +110,40 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             }
         }
     }
+
+    protected String doInBackground(String... params) {
+        String sdcard = Environment.getExternalStorageDirectory().getPath();
+
+        String url = "http://192.168.14.47:8805/meto/and/share/trans.do";
+        // 파일을 서버로 보내는 부분
+        HttpClient client = new DefaultHttpClient();
+        HttpPost post = new HttpPost(url);
+
+        File glee = new File(sdcard+"/my.db");
+        FileBody bin = new FileBody(glee);
+
+        MultipartEntityBuilder meb = MultipartEntityBuilder.create();
+        meb.setCharset(Charset.forName("UTF-8"));
+        meb.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+        meb.addPart("database", bin);
+        HttpEntity entity = meb.build();
+
+        post.setEntity(entity);
+
+        try {
+            HttpResponse reponse = client.execute(post);
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } // post 형식의 데이터를 서버로 전달
+
+        return "SUCCESS";
+    }
+
+
     public String getImageNameToUri(Uri data)
     {
         String[] proj = { MediaStore.Images.Media.DATA };
