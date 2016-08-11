@@ -2,95 +2,278 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="#ffffff">
 
-    <!--<ScrollView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">-->
+        android:layout_height="match_parent">
 
-    <!--내용-->
-    <LinearLayout
-        android:id="@+id/sview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
-        <WebView
-            android:id="@+id/webview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:focusable="true"
-            android:focusableInTouchMode="true"></WebView>
-
-    </LinearLayout>
-    <!--작성자, 좋아요-->
-   <!-- <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal">
-        <TextView
-            android:id="@+id/sWriter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="15dp"
-            android:text="작성자"
-            android:textSize="20sp"
-            />
-        <TextView
-            android:id="@+id/meto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:layout_marginRight="20dp"
-            android:text="meto"
-            android:textSize="20sp"
-            />
-        <ImageButton
-            android:id="@+id/like01"
-            android:src="@drawable/like02"
-            android:scaleType="fitXY"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:background="#ffffff"/>
-
-    </LinearLayout>-->
-    <!--댓글 창-->
-    <!--<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:gravity="center">
-        <EditText
-            android:id="@+id/rEdit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:layout_span="2"
-            android:textSize="15sp"/>
-        <Button
-            android:id="@+id/rAdd"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="등록"
-            android:textSize="20sp"/>
-    </LinearLayout>-->
-
-    <!--댓글목록-->
-    <!--<LinearLayout
+        <LinearLayout
         android:id="@+id/lay01"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:visibility="visible">
+
+        <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <!--내용-->
+                <LinearLayout
+                    android:id="@+id/sview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/sTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:text="제목"
+                        android:textSize="20sp"
+                        android:textColor="#000000"/>
+                    <TextView
+                        android:id="@+id/sWriter"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="20dp"
+                        android:text="작성자"
+                        android:textSize="15sp"
+                        />
+                    <WebView
+                        android:id="@+id/webview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"></WebView>
+
+                </LinearLayout>
+                <!--작성자, 좋아요-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="left"
+                        android:orientation="horizontal">
+                        <ImageButton
+                            android:id="@+id/like01"
+                            android:src="@drawable/like02"
+                            android:scaleType="fitXY"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:background="#ffffff"/>
+                        <TextView
+                            android:id="@+id/meto"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:text="meto"
+                            android:textSize="20sp"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="left"
+                        android:orientation="horizontal">
+                        <ImageButton
+                            android:id="@+id/bubble01"
+                            android:src="@drawable/bubble01"
+                            android:scaleType="fitXY"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:background="#ffffff"/>
+                        <TextView
+                            android:id="@+id/repCnt01"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:layout_marginLeft="5dp"
+                            android:text="repCnt"
+                            android:textSize="20sp"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:orientation="horizontal">
+                        <ImageButton
+                            android:id="@+id/sSingo"
+                            android:src="@drawable/singo02"
+                            android:scaleType="fitXY"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginRight="5dp"
+                            android:background="#ffffff"/>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+                <!--전체댓글, 댓글 쓰기-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+                    <Button
+                        android:id="@+id/repAll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="10dp"
+                        android:text="전체댓글보기"/>
+                    <Button
+                        android:id="@+id/rWrite"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="10dp"
+                        android:text="댓글쓰기"/>
+                </LinearLayout>
+
+                <!--댓글목록-->
+                <LinearLayout
+                    android:id="@+id/repMain"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                </LinearLayout>
+
+                <!--댓글 창-->
+                <LinearLayout
+                    android:id="@+id/lay03"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:visibility="invisible">
+                    <EditText
+                        android:id="@+id/rEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3"
+                        android:layout_span="2"
+                        android:textSize="15sp"
+                        />
+                    <Button
+                        android:id="@+id/rAdd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="등록"
+                        android:textSize="20sp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+        <LinearLayout
+        android:id="@+id/lay02"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center">
+        android:visibility="invisible">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <ImageButton
+                    android:id="@+id/repfin"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/cancel02"
+                    android:scaleType="fitXY"
+                    android:background="#ffffff"/>
+                <TextView
+                    android:id="@+id/repCnt02"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingLeft="20dp"
+                    android:text="댓글"
+                    android:textSize="20sp"
+                    android:textColor="#000000"
+                    />
+                <ImageButton
+                    android:id="@+id/repAdd"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/pen01"
+                    android:scaleType="fitXY"
+                    android:background="#ffffff"/>
 
-    </LinearLayout>-->
+            </LinearLayout>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <!--<LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <ImageButton
+                            android:id="@+id/repfin"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/cancel02"
+                            android:scaleType="fitXY"
+                            android:background="#ffffff"/>
 
-    <!--</ScrollView>-->
+                    </LinearLayout>-->
+
+                    <LinearLayout
+                        android:id="@+id/repList"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+                    </LinearLayout>
+                </LinearLayout>
+
+            </ScrollView>
+        </LinearLayout>
+    </FrameLayout>
 </LinearLayout>
+
+
