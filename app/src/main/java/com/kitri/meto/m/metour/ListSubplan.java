@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -36,6 +35,7 @@ public class ListSubplan extends Activity {
     LinearLayout listSubplan_total;
 
     LinearLayout layoutSub[];
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +63,6 @@ public class ListSubplan extends Activity {
             final HttpEntity entity = response.getEntity();
             InputStream is = entity.getContent();
             list = getXML(is);
-
-            Toast.makeText(getApplicationContext(), "list.size() : "+list.size(), Toast.LENGTH_SHORT).show();
 
             layoutSub = new LinearLayout[list.size()];
 
@@ -98,7 +96,7 @@ public class ListSubplan extends Activity {
                 if(dto.getMission_yn().equals("0")){
                     m = "";
                 }else if(dto.getMission().equals("1")){
-                    m = "사진 완료 & GPS 실패";
+                    m = "사진 완료\nGPS 실패";
                 }else if(dto.getMission().equals("2") || dto.getMission().equals("3")){
                     m = "성공";
                 }
@@ -135,11 +133,12 @@ public class ListSubplan extends Activity {
                 });
 
                 listSubplan.addView(layoutSub[i]);
-            }
 
+            }
         } catch (Exception e){
             Log.d("sendPost===> ", e.toString());
         }
+
 
         for(int i = 0; i < layoutSub.length; i++){
             int subNum = Integer.parseInt(layoutSub[i].getTag().toString());
