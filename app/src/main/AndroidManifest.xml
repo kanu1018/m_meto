@@ -20,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainPlanAnd"></activity>
+        <activity android:name=".MainPlanList"></activity>
     </application>
 
 </manifest>
