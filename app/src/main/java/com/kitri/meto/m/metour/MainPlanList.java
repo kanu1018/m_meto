@@ -1,6 +1,8 @@
 package com.kitri.meto.m.metour;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,7 +16,6 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -37,13 +38,20 @@ public class MainPlanList extends Activity{
 
 
 
-    LinearLayout.LayoutParams BtnPos = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT,1);
+
     int main_num;
     int year;
     int month;
     int day;
     int point_num;
     String title;
+
+    int number_plan;
+
+    CheckBox chkbox[];
+    Button btn_C[];
+
+    AlertDialog.Builder alert_chk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,12 +75,25 @@ public class MainPlanList extends Activity{
         LinearLayout BottomLayout = (LinearLayout) findViewById(R.id.ListBottomLayout);
 
         List<ScheduleDTO> list = new ArrayList<>();
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         int main_writer = intent.getExtras().getInt("main_writer");
         int flag = intent.getExtras().getInt("flag");
 
+        alert_chk = new AlertDialog.Builder(this);
         Button DelBtn = (Button) findViewById(R.id.ListDelBtn);
         Button ShareBtn = (Button) findViewById(R.id.ListShareBtn);
+        DelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alert_chk.setTitle("삭제확인");
+                alert_chk.setMessage("선택하신 항목을 삭제하시겠습니까?");
+                alert_chk.setPositiveButton("Yes",cofirm_delete);
+                alert_chk.setNegativeButton("No",null);
+                alert_chk.show();
+            }
+        });
+
+
 
         Title.setText("MeTo 목록");
 
@@ -93,16 +114,16 @@ public class MainPlanList extends Activity{
 
             list = getXML(is);
             LinearLayout layouts[] = new LinearLayout[list.size()];
-            CheckBox chkbox[] = new CheckBox[list.size()];
+            chkbox = new CheckBox[list.size()];
             LinearLayout layout_A[] = new LinearLayout[list.size()];
             LinearLayout layout_B[] = new LinearLayout[list.size()];
                 TextView txt_B_Top[] = new TextView[list.size()];
                 LinearLayout layout_B_bottom[] = new LinearLayout[list.size()];
                     TextView txt_B_bottom_a[] = new TextView[list.size()];
                     TextView txt_B_bottom_b[] = new TextView[list.size()];
-            Button btn_C[] =new Button[list.size()];
+            btn_C =new Button[list.size()];
 
-            Toast.makeText(getApplicationContext(),Integer.toString(list.size()),Toast.LENGTH_SHORT).show();
+
             LinearLayout.LayoutParams layouts_pos = new LinearLayout.LayoutParams(900,200);
             LinearLayout.LayoutParams layout_A_pos = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT,1);
             LinearLayout.LayoutParams layout_B_pos = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT,6);
@@ -117,6 +138,8 @@ public class MainPlanList extends Activity{
             layout_A_pos.setMargins(6,6,3,6);
             layout_B_pos.setMargins(3,6,3,6);
             btn_C_pos.setMargins(3,6,6,6);
+
+            number_plan = list.size();
 
 
            for (int i=0;i<list.size();i++){
@@ -144,7 +167,6 @@ public class MainPlanList extends Activity{
                btn_C[i].setBackgroundColor(Color.rgb(255,255,255));
 
 
-
                main_num = list.get(i).getMain_num();
                year = list.get(i).getYear();
                month = list.get(i).getMonth();
@@ -165,6 +187,16 @@ public class MainPlanList extends Activity{
                layouts[i].addView(chkbox[i],layout_A_pos);
                layouts[i].addView(layout_B[i],layout_B_pos);
                layouts[i].addView(btn_C[i],btn_C_pos);
+
+               btn_C[i].setOnClickListener(new View.OnClickListener() {
+                   @Override
+                   public void onClick(View v) {
+                       Intent intent_new = new Intent(MainPlanList.this,ListSubplan.class);
+                       intent_new.putExtra("main_num",main_num);
+                       startActivity(intent_new);
+
+                   }
+               });
 
                MiddleLayout.addView(layouts[i],layouts_pos);
             }
@@ -227,5 +259,40 @@ public class MainPlanList extends Activity{
         } // end of try
         return list;
 
+    }
+
+
+
+    DialogInterface.OnClickListener cofirm_delete = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            for(int i =0;i<number_plan;i++){
+                if(chkbox[i].isChecked()){
+                    int m_num = Integer.parseInt(chkbox[i].getTag().toString());
+                    DeleteSchedule(m_num);
+
+                }
+            }
+            finish();
+        }
+    };
+
+    public void DeleteSchedule(int main_num){
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        try{
+            String requestURL = "http://192.168.14.21:8805/meto/and/schedule/deleteMainSchedule.do?main_num="+main_num;
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(requestURL);
+            List<NameValuePair> paramList = new ArrayList<>();
+
+            post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
+            HttpResponse response = client.execute(post);
+            HttpEntity entity = response.getEntity();
+
+
+        }catch (Exception e) {
+            Log.d("sendPost===> ", e.toString());
+        }
     }
 }

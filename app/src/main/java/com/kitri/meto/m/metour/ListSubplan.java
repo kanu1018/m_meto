@@ -36,6 +36,7 @@ public class ListSubplan extends Activity {
 
     LinearLayout layoutSub[];
 
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +51,14 @@ public class ListSubplan extends Activity {
         listSubplan = (LinearLayout)findViewById(R.id.list_subplan);
         listSubplan_total = (LinearLayout)findViewById(R.id.list_subplan_total);
 
+        intent = getIntent();
+        int mainNum = intent.getExtras().getInt("main_num");
+
         try{
-            String mainNum = "77";
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
             List<NameValuePair> paramList = new ArrayList<>();
-            paramList.add(new BasicNameValuePair("main_num", mainNum));
+            paramList.add(new BasicNameValuePair("main_num", Integer.toString(mainNum)));
 
             post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
 

@@ -18,7 +18,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -388,9 +387,7 @@ public class MainPlanAnd extends Activity {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             main_title = editText.getText().toString();
-            Toast.makeText(getApplication(),main_title,Toast.LENGTH_SHORT).show();
             InsertSchedule(main_writer,year,month,day,main_title);
-            Log.d("AAAAAAAAAAAAAAAA", main_writer+"/"+year+"/"+month+"/"+day+"/"+main_title);
             alert_move.show();
         }
     };
