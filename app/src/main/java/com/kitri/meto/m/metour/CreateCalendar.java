@@ -45,6 +45,10 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
     Calendar now = Calendar.getInstance();
     Calendar cal = Calendar.getInstance();
 
+    TextView DelBtn;
+    TextView ListBtn;
+    TextView ShareBtn;
+
     int now_y;
     int now_m;
     int now_d;
@@ -63,7 +67,11 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calendar);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         MonthView = (TextView) findViewById(R.id.calendarMonth);
         for (int i = 0; i < calendar_box.length; i++) {
@@ -75,20 +83,28 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
         TextView NextMonth = (TextView) findViewById(R.id.calNextMonth);
         NextMonth.setOnClickListener(this);
 
+
+        ListBtn = (TextView) findViewById(R.id.calendarListBtn);
+        ListBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CreateCalendar.this, MainPlanList.class);
+                intent.putExtra("main_writer", main_writer);
+                intent.putExtra("flag",2);
+                startActivity(intent);
+            }
+        });
+
+
         now_y = now.get(Calendar.YEAR);
         now_m = now.get(Calendar.MONTH);
         now_d = now.get(Calendar.DAY_OF_MONTH);
-
         cal.set(now_y, now_m, 1);
         dow = cal.get(Calendar.DAY_OF_WEEK);
 
-
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
-
         CalCalendar(now_y, now_m, dow);
-
 
     }
 
@@ -312,35 +328,6 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
             Log.d("SelectActivityError",e.toString());
         } // end of try
         return list;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setContentView(R.layout.calendar);
-
-        MonthView = (TextView) findViewById(R.id.calendarMonth);
-        for (int i = 0; i < calendar_box.length; i++) {
-            calView[i] = (TextView) findViewById(calendar_box[i]);
-        }
-
-        TextView LastMonth = (TextView) findViewById(R.id.calLastMonth);
-        LastMonth.setOnClickListener(this);
-        TextView NextMonth = (TextView) findViewById(R.id.calNextMonth);
-        NextMonth.setOnClickListener(this);
-
-        now_y = now.get(Calendar.YEAR);
-        now_m = now.get(Calendar.MONTH);
-        now_d = now.get(Calendar.DAY_OF_MONTH);
-
-        cal.set(now_y, now_m, 1);
-        dow = cal.get(Calendar.DAY_OF_WEEK);
-
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-        CalCalendar(now_y, now_m, dow);
     }
 
 }
