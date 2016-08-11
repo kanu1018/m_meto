@@ -11,9 +11,11 @@ public class SharePlanDTO {
     private int metoo;
     private int point_num;
     private String share_title;
+    private String id;
+    private String photo;
 
     public SharePlanDTO(){}
-    public SharePlanDTO(int share_num, int writer, String location, String content, int metoo, int point_num, String share_title) {
+    public SharePlanDTO(int share_num, int writer, String location, String content, int metoo, int point_num, String share_title,String id,String photo) {
         super();
         this.share_num = share_num;
         this.writer = writer;
@@ -21,6 +23,8 @@ public class SharePlanDTO {
         this.content = content;
         this.metoo = metoo;
         this.point_num = point_num;
+        this.id = id;
+        this.photo = photo;
     }
     public int getShare_num() {
         return share_num;
@@ -64,4 +68,15 @@ public class SharePlanDTO {
     public void setShare_title(String share_title) {
         this.share_title = share_title;
     }
+    public String getId(){return id;}
+    public void setId(String id){this.id=id;}
+    public String getPhoto() {
+        return photo;
+    }
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+
+
 }

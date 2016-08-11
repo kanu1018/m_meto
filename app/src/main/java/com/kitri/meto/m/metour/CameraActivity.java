@@ -16,20 +16,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 public class CameraActivity extends AppCompatActivity implements View.OnClickListener{
     private Button btn,btntrans;
@@ -40,7 +28,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.camera_layout);
-        btn = (Button)findViewById(R.id.button);
+       /* btn = (Button)findViewById(R.id.button);
         btntrans=(Button)findViewById(R.id.btntrans);
         imgv=(ImageView)findViewById(R.id.iv);
 
@@ -50,7 +38,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             public void onClick(View v) {
                 doInBackground();
             }
-        });
+        });*/
 
 
         /*btn.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +87,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                     client.execute(post);    // post 형식의 데이터를 서버로 전달*/
 
 
-                    Toast.makeText(getApplicationContext(),doInBackground(),Toast.LENGTH_SHORT).show();
+                   /* Toast.makeText(getApplicationContext(),doInBackground(),Toast.LENGTH_SHORT).show();*/
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -111,7 +99,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    protected String doInBackground(String... params) {
+    /*protected String doInBackground(String... params) {
         String sdcard = Environment.getExternalStorageDirectory().getPath();
 
         String url = "http://192.168.14.47:8805/meto/and/share/trans.do";
@@ -141,7 +129,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         } // post 형식의 데이터를 서버로 전달
 
         return "SUCCESS";
-    }
+    }*/
 
 
     public String getImageNameToUri(Uri data)
