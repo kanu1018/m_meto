@@ -1,6 +1,8 @@
 package com.kitri.meto.m.metour;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -47,6 +49,11 @@ public class MainPlanAnd extends Activity {
     int point_num;
     String main_title;
     EditText editText;
+
+    AlertDialog.Builder alert_delete;
+    AlertDialog.Builder alert_add;
+    AlertDialog.Builder alert_move;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -187,6 +194,15 @@ public class MainPlanAnd extends Activity {
             LinearLayout.LayoutParams btns_pos1 = new LinearLayout.LayoutParams(0,  ViewGroup.LayoutParams.MATCH_PARENT,1);
             LinearLayout.LayoutParams btns_pos2 = new LinearLayout.LayoutParams(0,  ViewGroup.LayoutParams.MATCH_PARENT,1);
 
+
+            alert_delete = new AlertDialog.Builder(this);
+            alert_delete.setTitle("삭제 확인");
+            alert_delete.setMessage("삭제 하시겠습니까?");
+            alert_delete.setPositiveButton("삭제",confirm_delete);
+            alert_delete.setNegativeButton("취소",null);
+
+
+
             btnDelete.setText("계획삭제");
             btnDetail.setText("세부계획");
 
@@ -204,8 +220,7 @@ public class MainPlanAnd extends Activity {
             btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DeleteSchedule(main_num);
-                    finish();
+                    alert_delete.show();
                 }
             });
 
@@ -311,6 +326,19 @@ public class MainPlanAnd extends Activity {
 
             LinearLayout.LayoutParams btns_pos = new LinearLayout.LayoutParams(0,  ViewGroup.LayoutParams.MATCH_PARENT,1);
 
+            alert_add = new AlertDialog.Builder(this);
+            alert_add.setTitle("등록 확인");
+            alert_add.setMessage("등록 하시겠습니까?");
+            alert_add.setNegativeButton("취소",null);
+            alert_add.setPositiveButton("등록",confirm_add);
+
+            alert_move = new AlertDialog.Builder(this);
+            alert_move.setTitle("세부 계획으로 이동");
+            alert_move.setMessage("세부계획으로 이동하시겠습니까?");
+            alert_move.setNegativeButton("이동x",confim_not_move);
+            alert_move.setPositiveButton("이동",null);
+
+
             btnAdd.setText("계획등록");
 
             btnAdd.setBackgroundColor(Color.rgb(26, 188, 156));
@@ -326,11 +354,8 @@ public class MainPlanAnd extends Activity {
             btnAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    alert_add.show();
                     intent.putExtra("AddFlag",0);
-                    main_title = editText.getText().toString();
-                    Toast.makeText(getApplication(),main_title,Toast.LENGTH_SHORT).show();
-                    InsertSchedule(main_writer,year,month,day,main_title);
-                    finish();
                 }
             });
 
@@ -340,7 +365,6 @@ public class MainPlanAnd extends Activity {
 
     public void DeleteSchedule(int main_num){
         try{
-            ScheduleDTO scheduleDTO;
             String requestURL = "http://192.168.14.21:8805/meto/and/schedule/deleteMainSchedule.do?main_num="+main_num;
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
@@ -348,8 +372,6 @@ public class MainPlanAnd extends Activity {
 
             post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
 
-            HttpResponse response = client.execute(post);
-            HttpEntity entity = response.getEntity();
 
         }catch (Exception e) {
             Log.d("sendPost===> ", e.toString());
@@ -358,7 +380,6 @@ public class MainPlanAnd extends Activity {
 
     public void InsertSchedule(int main_writer, int year, int month,int day, String main_title){
         try{
-            ScheduleDTO scheduleDTO;
             String requestURL = "http://192.168.14.21:8805/meto/and/schedule/insertMainSchedule.do?main_writer="+main_writer+"&year="+year+"&month="+month+"&day="+day+"&main_title="+main_title;
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
@@ -366,8 +387,6 @@ public class MainPlanAnd extends Activity {
 
             post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
 
-            HttpResponse response = client.execute(post);
-            HttpEntity entity = response.getEntity();
 
         }catch (Exception e) {
             Log.d("sendPost===> ", e.toString());
@@ -414,4 +433,35 @@ public class MainPlanAnd extends Activity {
         } // end of try
         return dto;
     }
+
+    DialogInterface.OnClickListener confirm_delete = new DialogInterface.OnClickListener(){
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            DeleteSchedule(main_num);
+            finish();
+        }
+    };
+    DialogInterface.OnClickListener confirm_add = new DialogInterface.OnClickListener(){
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            main_title = editText.getText().toString();
+            Toast.makeText(getApplication(),main_title,Toast.LENGTH_SHORT).show();
+            InsertSchedule(main_writer,year,month,day,main_title);
+            alert_move.show();
+        }
+    };
+
+    DialogInterface.OnClickListener confirm_move = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+
+        }
+    };
+    DialogInterface.OnClickListener confim_not_move = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            finish();
+        }
+    };
+
 }
