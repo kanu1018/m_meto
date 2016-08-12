@@ -266,6 +266,15 @@ public class MainPlanAnd extends Activity {
                         alert_delete.show();
                     }
                 });
+                btnDetail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent_new = new Intent(MainPlanAnd.this,ListSubplan.class);
+                        intent_new.putExtra("main_num",main_num);
+                        startActivity(intent_new);
+                        finish();
+                    }
+                });
 
                 try {
                     ScheduleDTO scheduleDTO;
@@ -395,6 +404,9 @@ public class MainPlanAnd extends Activity {
     DialogInterface.OnClickListener confirm_move = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
+            Intent intent_new = new Intent(MainPlanAnd.this,ListSubplan.class);
+            intent_new.putExtra("main_num",main_num);
+            startActivity(intent_new);
             finish();
         }
     };
