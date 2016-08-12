@@ -52,7 +52,9 @@ public class MemLog extends Activity{
             public void onClick(View v) {
                 vId = edtId.getText().toString();
                 vPwd = edtPwd.getText().toString();
+
                 String requestURL =  "http://192.168.14.21:8805/meto/and/member/login.do";
+
 
                 //HttpClient client   = new DefaultHttpClient();
                 HttpClient client   = SessionControl.getHttpclient();
@@ -78,11 +80,12 @@ public class MemLog extends Activity{
                 } catch(Exception e) {
                     Log.d("sendPost===> ", e.toString());
                 }
-
+                
 
                 if(mem_num!=0){
                     Intent intent = new Intent(getApplicationContext(),SearchByCategory.class);
                     intent.putExtra("mem_num",mem_num);
+
                     startActivity(intent);
                     finish();
                 } else{

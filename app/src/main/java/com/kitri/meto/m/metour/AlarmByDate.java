@@ -1,8 +1,26 @@
 package com.kitri.meto.m.metour;
 
 import android.app.Activity;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.util.Log;
+import android.widget.ImageView;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -13,38 +31,106 @@ import java.util.List;
 public class AlarmByDate extends Activity {
     private  static int ONE_MINUTE = 5626;
 
+    List<ScheduleDTO> days;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
+        setContentView(R.layout.loading);
 
-        /*Calendar calendar = Calendar.getInstance();
-        //알람시간 set해주기
-        calendar.set(2016,7,11,14,35,0); //year, month(1빼줘야해), day, hour(24시간), minute, second
-        new AlarmMETO(getApplicationContext()).Alarm(calendar);
+        ImageView imageView = (ImageView)findViewById(R.id.loading_image);
+        AnimationDrawable animationDrawable = (AnimationDrawable)imageView.getBackground();
+        animationDrawable.start();
 
-        */
-        /*Calendar calendar[] = new Calendar[3];
-        int second = 54;
-        for(int i = 0; i < 3; i++){
-            calendar[i] = Calendar.getInstance();
-            //알람시간 set해주기
-            calendar[i].set(2016,7,11,14,second,0); //year, month(1빼줘야해), day, hour(24시간), minute, second
-            second+=1;
-        }*/
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
+        String requestURL = "http://192.168.14.45:8805/meto/and/schedule/getDay.do";
 
-        List<Calendar> calendar = new ArrayList<>();
-        int second = 27;
-        for(int i = 0; i < 3; i++){
-            Calendar tmp = Calendar.getInstance();
-            //알람시간 set해주기
-            tmp.set(2016,7,11,16,second,0); //year, month(1빼줘야해), day, hour(24시간), minute, second
-            second+=1;
+        String ID = "1";
+        try{
+            HttpClient client = new DefaultHttpClient();
+            //// TODO: 세션유지
+            //HttpClient client = SessionControl.getHttpclient();
+            HttpPost post = new HttpPost(requestURL);
+            List<NameValuePair> paramList = new ArrayList<>();
 
-            calendar.add(tmp);
+            //// TODO: 세션유지
+            //String ID = SessionControl.id;
+            paramList.add(new BasicNameValuePair("id", ID));
+            post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
+
+            HttpResponse response = client.execute(post);
+            final HttpEntity entity = response.getEntity();
+            InputStream is = entity.getContent();
+            days = getXML(is);
+
+        }catch (Exception e){
+            Log.d("sendPost===> ", e.toString());
         }
 
-        new AlarmMETO(getApplicationContext()).Alarm(calendar);
+        //알람 등록하기
+        List<Calendar> calendar = new ArrayList<>();
+        for(int i = 0; i < days.size(); i++){
+            Calendar tmp = Calendar.getInstance();
+            //알람시간 set해주기
+            String day[] = days.get(i).getMain_date().split("/");
+            tmp.set(Integer.parseInt(day[0]),Integer.parseInt(day[1])-1,Integer.parseInt(day[2]),9,0,0); //year, month(1빼줘야해), day, hour(24시간), minute, second
+            calendar.add(tmp);
+        }
+        new AlarmMETO(getApplicationContext()).Alarm(calendar, days);
+
+
+
+        //알람 다 등록하고 이동할 페이지!
+       // if(animationDrawable.isRunning()){
+       //     animationDrawable.stop();
+       // }
+        /*Intent intent2 = new Intent(getApplicationContext(), MemIns.class);
+        startActivity(intent2);*/
+    }
+
+    public List<ScheduleDTO> getXML(InputStream is){
+        List<ScheduleDTO> list = new ArrayList<>();
+        try {
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser parser = factory.newPullParser();
+            parser.setInput(is, "UTF-8");
+
+            ScheduleDTO tmp = null;
+            int eventType = parser.getEventType();
+            while (eventType != XmlPullParser.END_DOCUMENT){
+                switch (eventType){
+                    case XmlPullParser.START_TAG:
+                        String startTag = parser.getName();
+                        if(startTag.equals("time")){
+                            tmp = new ScheduleDTO();
+                        }
+
+                        if(tmp != null){
+                            if(startTag.equals("main_date")){
+                                tmp.setMain_date(parser.nextText());
+                            }else if(startTag.equals("main_num")){
+                                tmp.setMain_num(Integer.parseInt(parser.nextText()));
+                            }else if(startTag.equals("main_title")){
+                                tmp.setMain_title(parser.nextText());
+                            }
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        String endTag = parser.getName();
+                        if(endTag.equals("time")){
+                            list.add(tmp);
+                        }
+                        break;
+                }
+                eventType = parser.next();
+            }
+        }catch (XmlPullParserException e){
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return list;
     }
 }
