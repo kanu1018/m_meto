@@ -1,8 +1,10 @@
 package com.kitri.meto.m.metour;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.util.Log;
 import android.widget.ImageView;
@@ -81,13 +83,16 @@ public class AlarmByDate extends Activity {
         new AlarmMETO(getApplicationContext()).Alarm(calendar, days);
 
 
+        Handler mHandler = new Handler();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent i = new Intent(AlarmByDate.this, MemIns.class);
+                startActivity(i);
+                finish();
+            }
+        }, 3500);
 
-        //알람 다 등록하고 이동할 페이지!
-       // if(animationDrawable.isRunning()){
-       //     animationDrawable.stop();
-       // }
-        /*Intent intent2 = new Intent(getApplicationContext(), MemIns.class);
-        startActivity(intent2);*/
     }
 
     public List<ScheduleDTO> getXML(InputStream is){
