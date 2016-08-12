@@ -56,6 +56,8 @@ public class ListSubplan extends Activity {
 
         try{
             HttpClient client = new DefaultHttpClient();
+            //// TODO: 세션유지
+            //HttpClient client = SessionControl.getHttpclient();
             HttpPost post = new HttpPost(requestURL);
             List<NameValuePair> paramList = new ArrayList<>();
             paramList.add(new BasicNameValuePair("main_num", Integer.toString(mainNum)));

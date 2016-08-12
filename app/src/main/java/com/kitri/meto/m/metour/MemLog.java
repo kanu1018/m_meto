@@ -51,7 +51,7 @@ public class MemLog extends Activity{
             public void onClick(View v) {
                 vId = edtId.getText().toString();
                 vPwd = edtPwd.getText().toString();
-                String requestURL =  "http://192.168.14.19:8805/meto/and/member/login.do";
+                String requestURL =  "http://192.168.14.45:8805/meto/and/member/login.do";
 
                 //HttpClient client   = new DefaultHttpClient();
                 HttpClient client   = SessionControl.getHttpclient();
@@ -78,6 +78,7 @@ public class MemLog extends Activity{
                 }
 
                 if(flag==true){
+                    SessionControl.id = vId;
                     Intent intent = new Intent(getApplicationContext(),Login_ok.class);
                     startActivity(intent);
                 } else{
