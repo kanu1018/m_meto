@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import java.util.Calendar;
 import java.util.List;
@@ -25,14 +24,16 @@ public class AlarmMETO {
         this.context = context;
     }
 
-    public void Alarm(List<Calendar> calendar){
+    public void Alarm(List<Calendar> calendar, List<ScheduleDTO> days){
         AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 
-        Intent intent = new Intent(context, BroadcastD.class);
-
         PendingIntent sender[] = new PendingIntent[calendar.size()];
+
         for(int i = 0 ; i < calendar.size(); i++) {
-            sender[i] = PendingIntent.getBroadcast(context, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            Intent intent = new Intent(context, BroadcastD.class);
+            intent.putExtra("title", days.get(i).getMain_title());
+            intent.putExtra("main_num", days.get(i).getMain_num());
+            sender[i] = PendingIntent.getBroadcast(context, days.get(i).getMain_num(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
             /*
             * MainActivity.this => PendingIntent를 부르려는 컨텍스트
@@ -48,8 +49,9 @@ public class AlarmMETO {
         //calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 23, 12, 0);
         //calendar.set(2016,7,11,11,25,0);
 
+
         for(int i = 0; i < calendar.size(); i++) {
-            Log.d("time == > ", calendar.get(i).getTime().toString());
+            am.cancel(sender[i]);
             am.set(AlarmManager.RTC_WAKEUP, calendar.get(i).getTimeInMillis(), sender[i]);
         }
         //알람 예약
@@ -59,4 +61,19 @@ public class AlarmMETO {
               AlarmManager.RTC - 실제 시간을 기준으로 합니다.
               AlarmManager.RTC_WAKEUP - RTC와 동일하며, 대기 상태일 경우 단말기를 활성 상태로 전환한 후 작업을 수행합니다.*/
     }
+
+    public void releaseAlarm(List<Calendar> calendar){
+        AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(context, BroadcastD.class);
+        PendingIntent sender[] = new PendingIntent[calendar.size()];
+        for(int i = 0 ; i < calendar.size(); i++) {
+            sender[i] = PendingIntent.getBroadcast(context, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+
+        for(int i = 0; i < calendar.size(); i++) {
+            am.cancel(sender[i]);
+        }
+    }
 }
+

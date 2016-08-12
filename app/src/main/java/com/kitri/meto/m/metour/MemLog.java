@@ -32,8 +32,9 @@ public class MemLog extends Activity{
     EditText edtId,edtPwd;
     Button btnLogin,btnJoin;
     String vId,vPwd;
-    boolean flag;
+
     public CookieManager cookieManager;
+    int mem_num;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +52,9 @@ public class MemLog extends Activity{
             public void onClick(View v) {
                 vId = edtId.getText().toString();
                 vPwd = edtPwd.getText().toString();
-                String requestURL =  "http://192.168.14.19:8805/meto/and/member/login.do";
+
+                String requestURL =  "http://192.168.14.21:8805/meto/and/member/login.do";
+
 
                 //HttpClient client   = new DefaultHttpClient();
                 HttpClient client   = SessionControl.getHttpclient();
@@ -70,16 +73,21 @@ public class MemLog extends Activity{
                     //////////////////////
                     HttpEntity entity = response.getEntity();
                     InputStream is = entity.getContent();
-                    flag = getXMLFlag(is);
+                   mem_num = getXMLFlag(is);
+                    Log.d("FFFFFFFFFF",Integer.toString(mem_num));
 
                     //Toast.makeText(getApplicationContext(), "flag 확인 "+flag,Toast.LENGTH_SHORT).show();
                 } catch(Exception e) {
                     Log.d("sendPost===> ", e.toString());
                 }
+                
 
-                if(flag==true){
-                    Intent intent = new Intent(getApplicationContext(),Login_ok.class);
+                if(mem_num!=0){
+                    Intent intent = new Intent(getApplicationContext(),SearchByCategory.class);
+                    intent.putExtra("mem_num",mem_num);
+
                     startActivity(intent);
+                    finish();
                 } else{
                     Toast.makeText(getApplicationContext(), "로그인 실패 id / password를 확인하세요.",Toast.LENGTH_SHORT).show();
                 }
@@ -98,8 +106,9 @@ public class MemLog extends Activity{
         });
     }
 
-    public boolean getXMLFlag(InputStream is) {
-        boolean flag1=false;
+    public int getXMLFlag(InputStream is) {
+
+        int num =0;
 
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -114,14 +123,17 @@ public class MemLog extends Activity{
                     case XmlPullParser.START_TAG:
 
                         String startTag = parser.getName();
-                        if (startTag.equals("flag")) {
-                            flag1 = Boolean.parseBoolean(parser.nextText());
+                        Log.d("STAG",startTag);
+                        if  (startTag.equals("number")) {
+                            num = Integer.parseInt(parser.nextText());
                         }
-
                         break;
 
                     case XmlPullParser.END_TAG:
                         String endTag = parser.getName();
+                        Log.d("ETAG",endTag);
+                        if (endTag.equals("start")) {
+                        }
                         break;
                 } // end
                 eventType = parser.next();
@@ -129,6 +141,7 @@ public class MemLog extends Activity{
         } catch(Exception e) {
             Log.d("SelectActivityError",e.toString());
         } // end of try
-        return flag1;
+
+        return num;
     }
 }

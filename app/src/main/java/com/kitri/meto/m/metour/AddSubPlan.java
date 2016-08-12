@@ -38,8 +38,10 @@ public class AddSubPlan extends Activity implements View.OnClickListener {
 
     String[] time;
     List<Integer> index;
+    int main_num;
 
-   protected void onCreate(Bundle savedInstanceState) {
+
+    protected void onCreate(Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
        setContentView(R.layout.addsubplan);
 
@@ -59,14 +61,16 @@ public class AddSubPlan extends Activity implements View.OnClickListener {
        cancel.setOnClickListener(this);
        time = getResources().getStringArray(R.array.time);
 
-       String main_num = "77";
-       String requestURL = "http://192.168.14.45:8805/meto/and/subplan/add.do";
+       Intent intent = getIntent();
+       main_num = intent.getExtras().getInt("main_num");
+
+       String requestURL = "http://192.168.14.21:8805/meto/and/subplan/add.do";
 
        try{
            HttpClient client = new DefaultHttpClient();
            HttpPost post = new HttpPost(requestURL);
            List<NameValuePair> paramList = new ArrayList<>();
-           paramList.add(new BasicNameValuePair("main_num", main_num));
+           paramList.add(new BasicNameValuePair("main_num", Integer.toString(main_num)));
 
            post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
 
@@ -95,8 +99,7 @@ public class AddSubPlan extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.add_subplan) {
-            String main_num = "77";
-            String requestURL = "http://192.168.14.45:8805/meto/and/subplan/addok.do";
+            String requestURL = "http://192.168.14.21:8805/meto/and/subplan/addok.do";
 
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
@@ -112,7 +115,7 @@ public class AddSubPlan extends Activity implements View.OnClickListener {
                 mission_chk = "p";
             }
 
-            paramList.add(new BasicNameValuePair("main_num", main_num));
+            paramList.add(new BasicNameValuePair("main_num", Integer.toString(main_num)));
             paramList.add(new BasicNameValuePair("sub_title", title.getText().toString()));
             paramList.add(new BasicNameValuePair("start_time", start_time.getSelectedItem().toString()));
             paramList.add(new BasicNameValuePair("end_time", end_time.getSelectedItem().toString()));
@@ -128,13 +131,9 @@ public class AddSubPlan extends Activity implements View.OnClickListener {
             }
 
             finish();
-            Intent intent = new Intent(getApplicationContext(), ListSubplan.class);
-            startActivity(intent);
 
         } else if (v.getId() == R.id.add_subplan_cancel) {
             finish();
-            Intent intent = new Intent(getApplicationContext(), ListSubplan.class);
-            startActivity(intent);
         }
     }
 

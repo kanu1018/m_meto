@@ -73,6 +73,7 @@ public class MainPlanList extends Activity{
 
         LinearLayout MiddleLayout = (LinearLayout) findViewById(R.id.ListMiddleLayout);
         LinearLayout BottomLayout = (LinearLayout) findViewById(R.id.ListBottomLayout);
+        MiddleLayout.removeAllViewsInLayout();
 
         List<ScheduleDTO> list = new ArrayList<>();
         final Intent intent = getIntent();
@@ -173,6 +174,7 @@ public class MainPlanList extends Activity{
                day = list.get(i).getDay();
                point_num = list.get(i).getPoint_num();
                title = list.get(i).getMain_title();
+               btn_C[i].setTag(main_num);
 
                txt_B_Top[i].setText(title);
                txt_B_bottom_a[i].setText(year+"/"+month+"/"+day);
@@ -192,7 +194,7 @@ public class MainPlanList extends Activity{
                    @Override
                    public void onClick(View v) {
                        Intent intent_new = new Intent(MainPlanList.this,ListSubplan.class);
-                       intent_new.putExtra("main_num",main_num);
+                       intent_new.putExtra("main_num",Integer.parseInt(v.getTag().toString()));
                        startActivity(intent_new);
 
                    }

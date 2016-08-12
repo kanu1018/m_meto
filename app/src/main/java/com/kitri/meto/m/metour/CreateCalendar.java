@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.apache.http.HttpEntity;
@@ -60,7 +61,9 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
     int week_num;
     int day;
 
-    int main_writer=2;
+    int main_writer;
+
+    Intent intent_get;
 
 
     @Override
@@ -73,6 +76,10 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
 
+        intent_get = getIntent();
+        main_writer = intent_get.getExtras().getInt("main_writer",0);
+
+
         MonthView = (TextView) findViewById(R.id.calendarMonth);
         for (int i = 0; i < calendar_box.length; i++) {
             calView[i] = (TextView) findViewById(calendar_box[i]);
@@ -82,6 +89,14 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
         LastMonth.setOnClickListener(this);
         TextView NextMonth = (TextView) findViewById(R.id.calNextMonth);
         NextMonth.setOnClickListener(this);
+
+        ImageView closeBtn = (ImageView) findViewById(R.id.calendarCloseBtn);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
 
         ListBtn = (TextView) findViewById(R.id.calendarListBtn);

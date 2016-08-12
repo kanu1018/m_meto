@@ -17,13 +17,22 @@ public class BroadcastD extends BroadcastReceiver{
     public void onReceive(Context context, Intent intent) {//알람 시간이 되었을때 onReceive를 호출
         //NotificationManager 안드로이드 상태바에 메세지를 던지기 위한 서비스를 불러오고
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context,BottomBtn.class ), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, intent.getIntExtra("main_num", 0), new Intent(context,BottomBtn.class ), PendingIntent.FLAG_UPDATE_CURRENT);
         Notification.Builder builder = new Notification.Builder(context);
-        builder.setSmallIcon(R.drawable.like01).setTicker("ME TOUR").setWhen(System.currentTimeMillis())
-                .setNumber(1).setContentTitle("Me,tour").setContentText("여행 시작하십니까?") //contentText는 알림마다 메세지를 다르게 줘야함
+        builder.setSmallIcon(R.drawable.large_logo).setTicker("ME TOUR").setWhen(System.currentTimeMillis())
+                .setNumber(1).setContentTitle("Me,tour"+" "+intent.getStringExtra("title")).setContentText("여행 시작하십니까?") //contentText는 알림마다 메세지를 다르게 줘야함
                 .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setContentIntent(pendingIntent).setAutoCancel(true);
-        notificationManager.notify(1, builder.build());
 
+        //// TODO: 2016-08-12 알림 와서 버튼 누를때 액션 수정해야할곳
+        Intent intent_ok = new Intent(context,ListSubplan.class);
+        intent_ok.putExtra("main_num", intent.getIntExtra("main_num", 0));
+        PendingIntent OKpendingIntent = PendingIntent.getActivity(context, intent.getIntExtra("main_num", 0), intent_ok, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent NOpendingIntent = PendingIntent.getActivity(context, intent.getIntExtra("main_num", 0), new Intent(context,MemLog.class ), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        builder.addAction(R.mipmap.ic_launcher, "Yes!", OKpendingIntent);
+        builder.addAction(R.mipmap.ic_launcher, "No!", NOpendingIntent);
+
+        notificationManager.notify(1, builder.build());
         /*
         * setTicker : 알림이 뜰때 잠깐 표시되는 Text
         * setNumber : 미확인 알림의 개수

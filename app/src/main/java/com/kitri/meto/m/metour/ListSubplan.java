@@ -42,20 +42,28 @@ public class ListSubplan extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listsubplan);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        String requestURL = "http://192.168.14.45:8805/meto/and/subplan/list.do";
+        String requestURL = "http://192.168.14.21:8805/meto/and/subplan/list.do";
 
         listSubplan = (LinearLayout)findViewById(R.id.list_subplan);
+        listSubplan.removeAllViewsInLayout();
         listSubplan_total = (LinearLayout)findViewById(R.id.list_subplan_total);
 
         intent = getIntent();
-        int mainNum = intent.getExtras().getInt("main_num");
+        final int mainNum = intent.getExtras().getInt("main_num");
 
         try{
             HttpClient client = new DefaultHttpClient();
+            //// TODO: 세션유지
+            //HttpClient client = SessionControl.getHttpclient();
             HttpPost post = new HttpPost(requestURL);
             List<NameValuePair> paramList = new ArrayList<>();
             paramList.add(new BasicNameValuePair("main_num", Integer.toString(mainNum)));
@@ -126,10 +134,12 @@ public class ListSubplan extends Activity {
                         int subNum = Integer.parseInt(v.getTag().toString());
                         if(subNum == 0){
                             Intent intent = new Intent(getApplicationContext(), AddSubPlan.class);
+                            intent.putExtra("main_num",mainNum);
                             startActivity(intent);
                         }else {
                             Intent intent = new Intent(getApplicationContext(), EditSubPlan.class);
                             intent.putExtra("subNum", subNum);
+                            intent.putExtra("main_num",mainNum);
                             startActivity(intent);
                         }
                     }
