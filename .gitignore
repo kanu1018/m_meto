@@ -68,9 +68,6 @@ captures/
 ### Android Patch ###
 gen-external-apklibs
 
-.idea/
-
-AndroidManifest.xml
 
 ### Java ###
 *.class

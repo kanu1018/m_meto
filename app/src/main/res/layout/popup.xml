@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F6F6F6"
+    android:padding="10dp"
+    android:id="@+id/popup_element">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/pImg01"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:src="@drawable/pen01"
+            android:scaleType="fitXY"
+            android:background="#ffffff"/>
+
+        <TextView
+            android:id="@+id/pEdit"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="5dp"
+            android:background="#ffffff"
+            android:text="댓글 수정"
+            android:textSize="15dp"
+            android:textColor="#000000"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/pImg02"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:src="@drawable/delete01"
+            android:scaleType="fitXY"
+            android:background="#ffffff"/>
+        <TextView
+            android:id="@+id/pDel"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="5dp"
+            android:background="#ffffff"
+            android:text="댓글 삭제"
+            android:textSize="15dp"
+            android:textColor="#000000"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/pImg03"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:src="@drawable/singo02"
+            android:scaleType="fitXY"
+            android:background="#ffffff"/>
+        <TextView
+            android:id="@+id/pSingo"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="5dp"
+            android:background="#ffffff"
+            android:text="신고하기"
+            android:textSize="15dp"
+            android:textColor="#000000"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/popfin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:text="취소"
+        android:textSize="15dp"/>
+</LinearLayout>
