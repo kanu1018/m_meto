@@ -44,7 +44,7 @@ public class SearchByCategory extends AppCompatActivity {
         ArrayList<WebView> weblist = new ArrayList<WebView>();
         ArrayList<Integer> path = new ArrayList<Integer>();
         ArrayList<SharePlanDTO> list = new ArrayList<SharePlanDTO>();
-        String requestURL = "http://192.168.14.47:8805/meto/and/share/list.do";
+        String requestURL = "http://192.168.14.45:8805/meto/and/share/list.do";
 
         HttpClient client   = new DefaultHttpClient();
         HttpPost post    = new HttpPost(requestURL);
