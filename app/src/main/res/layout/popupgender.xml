@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F6F6F6"
+    android:padding="10dp"
+    android:id="@+id/popup_element">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        >
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:id="@+id/rg">
+
+            <RadioButton
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:text="남"
+                android:id="@+id/m"
+                android:checked="true"/>
+            <RadioButton
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:text="여"
+                android:id="@+id/f"/>
+
+        </RadioGroup>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+    <Button
+        android:id="@+id/popsearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:text="검색"
+        android:textSize="15dp"/>
+
+    <Button
+        android:id="@+id/popfin"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:text="취소"
+        android:textSize="15dp"/>
+        </LinearLayout>
+</LinearLayout>
