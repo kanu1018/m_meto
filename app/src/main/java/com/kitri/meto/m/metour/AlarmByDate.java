@@ -40,6 +40,10 @@ public class AlarmByDate extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading);
 
+        ////////////////////////////////////////////////////
+        Intent before = getIntent();
+        final int mem_num = before.getIntExtra("mem_num",0);
+
         ImageView imageView = (ImageView)findViewById(R.id.loading_image);
         AnimationDrawable animationDrawable = (AnimationDrawable)imageView.getBackground();
         animationDrawable.start();
@@ -47,7 +51,7 @@ public class AlarmByDate extends Activity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        String requestURL = "http://192.168.14.45:8805/meto/and/schedule/getDay.do";
+        String requestURL = "http://192.168.14.19:8805/meto/and/schedule/getDay.do";
 
         String ID = "1";
         try{
@@ -77,7 +81,9 @@ public class AlarmByDate extends Activity {
             Calendar tmp = Calendar.getInstance();
             //알람시간 set해주기
             String day[] = days.get(i).getMain_date().split("/");
-            tmp.set(Integer.parseInt(day[0]),Integer.parseInt(day[1])-1,Integer.parseInt(day[2]),9,0,0); //year, month(1빼줘야해), day, hour(24시간), minute, second
+            //tmp.set(Integer.parseInt(day[0]),Integer.parseInt(day[1])-1,Integer.parseInt(day[2]),9,0,0); //year, month(1빼줘야해), day, hour(24시간), minute, second
+            tmp.set(2016,7,16,9,0,0); //year, month(1빼줘야해), day, hour(24시간), minute, second
+            Log.d("시간",tmp.toString());
             calendar.add(tmp);
         }
         new AlarmMETO(getApplicationContext()).Alarm(calendar, days);
@@ -87,7 +93,8 @@ public class AlarmByDate extends Activity {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent i = new Intent(AlarmByDate.this, MemIns.class);
+                Intent i = new Intent(AlarmByDate.this, SearchByCategory.class);
+                i.putExtra("mem_num", mem_num);
                 startActivity(i);
                 finish();
             }
@@ -119,6 +126,8 @@ public class AlarmByDate extends Activity {
                                 tmp.setMain_num(Integer.parseInt(parser.nextText()));
                             }else if(startTag.equals("main_title")){
                                 tmp.setMain_title(parser.nextText());
+                            }else if(startTag.equals("main_writer")){
+                                tmp.setMain_writer(Integer.parseInt(parser.nextText()));
                             }
                         }
                         break;
