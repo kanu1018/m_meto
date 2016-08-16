@@ -1,6 +1,7 @@
 package com.kitri.meto.m.metour;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +44,8 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
     Button popfin,popsearch;
     EditText location;
     Button btnSearchBest,btnSearchLocation,btnSearchGender,btnSearchAge;
+    Intent intent;
+    int mem_num;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,19 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
         btnSearchLocation.setOnClickListener(this);
         btnSearchGender.setOnClickListener(this);
         btnSearchAge.setOnClickListener(this);
+        intent = getIntent();
+        mem_num = intent.getExtras().getInt("mem_num",0);
+
+        Button btnMoveCalendar = (Button) findViewById(R.id.moveCalendar);
+        btnMoveCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent_new = new Intent(getApplicationContext(), CreateCalendar.class);
+                intent_new.putExtra("main_writer", mem_num);
+                startActivity(intent_new);
+            }
+        });
+
         String requestURL = "http://192.168.14.47:8805/meto/and/share/list.do";
         ArrayList<WebView> weblist = new ArrayList<WebView>();
 
