@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import org.apache.http.HttpEntity;
@@ -41,8 +40,6 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
     LinearLayout listsel;
     PopupWindow pwindo;
     RadioButton rb1,rb2,rb3,rb4,rb5,rb6;
-    RadioGroup rg;
-    TextView txtgender;
     Button popfin,popsearch;
     EditText location;
     Button btnSearchBest,btnSearchLocation,btnSearchGender,btnSearchAge;
