@@ -36,26 +36,37 @@ public class ListSubplan extends Activity {
 
     LinearLayout layoutSub[];
 
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listsubplan);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        String requestURL = "http://192.168.14.45:8805/meto/and/subplan/list.do";
+        String requestURL = "http://192.168.14.47:8805/meto/and/subplan/list.do";
 
         listSubplan = (LinearLayout)findViewById(R.id.list_subplan);
+        listSubplan.removeAllViewsInLayout();
         listSubplan_total = (LinearLayout)findViewById(R.id.list_subplan_total);
 
+        intent = getIntent();
+        final int mainNum = intent.getExtras().getInt("main_num");
+
         try{
-            String mainNum = "77";
             HttpClient client = new DefaultHttpClient();
+            //// TODO: 세션유지
+            //HttpClient client = SessionControl.getHttpclient();
             HttpPost post = new HttpPost(requestURL);
             List<NameValuePair> paramList = new ArrayList<>();
-            paramList.add(new BasicNameValuePair("main_num", mainNum));
+            paramList.add(new BasicNameValuePair("main_num", Integer.toString(mainNum)));
 
             post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
 
@@ -123,10 +134,12 @@ public class ListSubplan extends Activity {
                         int subNum = Integer.parseInt(v.getTag().toString());
                         if(subNum == 0){
                             Intent intent = new Intent(getApplicationContext(), AddSubPlan.class);
+                            intent.putExtra("main_num",mainNum);
                             startActivity(intent);
                         }else {
                             Intent intent = new Intent(getApplicationContext(), EditSubPlan.class);
                             intent.putExtra("subNum", subNum);
+                            intent.putExtra("main_num",mainNum);
                             startActivity(intent);
                         }
                     }
@@ -141,11 +154,19 @@ public class ListSubplan extends Activity {
 
 
         for(int i = 0; i < layoutSub.length; i++){
-            int subNum = Integer.parseInt(layoutSub[i].getTag().toString());
+            final int subNum = Integer.parseInt(layoutSub[i].getTag().toString());
             if(subNum != 0){
                 layoutSub[i].setBackgroundResource(R.drawable.line);
                 Button photo = new Button(this);
                 photo.setText("사진");
+                photo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent=new Intent(getApplicationContext(),CameraActivity.class);
+                        intent.putExtra("sub_num",String.valueOf(subNum));
+                        startActivity(intent);
+                    }
+                });
                 layoutSub[i].addView(photo);
             }
         }

@@ -12,6 +12,7 @@ import java.util.List;
 public class SessionControl {
     static public DefaultHttpClient httpclient = null;
     static public List<Cookie> cookies;
+    static String id;
 
     public static HttpClient getHttpclient()
     {

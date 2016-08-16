@@ -32,12 +32,15 @@ import java.util.List;
  * Created by Administrator on 2016-08-08.
  */
 public class EditSubPlan extends Activity implements View.OnClickListener {
-    EditText title, place, memo, photo;
+    EditText title,  memo, photo, place;
     Spinner start_time, end_time, mission;
-    Button ok, cancel, del;
+    Button ok, cancel, del, place_select, addphoto;
     int subNum;
+    int main_num;
 
     SubPlanDTO dto;
+
+    Double latitude, longitude;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,8 +50,9 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
         StrictMode.setThreadPolicy(policy);
 
         title = (EditText) findViewById(R.id.edit_subplan_title);
-        place = (EditText) findViewById(R.id.edit_subplan_place);
         memo = (EditText) findViewById(R.id.edit_subplan_memo);
+        place = (EditText) findViewById(R.id.edit_subplan_place_text);
+
         start_time = (Spinner) findViewById(R.id.edit_subplan_starttime);
         end_time = (Spinner) findViewById(R.id.edit_subplan_endtime);
         mission = (Spinner) findViewById(R.id.edit_subplan_mission);
@@ -57,16 +61,22 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
         ok = (Button) findViewById(R.id.edit_subplan);
         cancel = (Button) findViewById(R.id.edit_subplan_cancel);
         del = (Button)findViewById(R.id.edit_subplan_del);
+        place_select = (Button) findViewById(R.id.edit_subplan_place);
+        addphoto = (Button)findViewById(R.id.add_photo);
+
         ok.setOnClickListener(this);
         cancel.setOnClickListener(this);
         del.setOnClickListener(this);
+        place_select.setOnClickListener(this);
+        addphoto.setOnClickListener(this);
 
         Intent intent = getIntent();
         subNum = intent.getIntExtra("subNum", subNum);
+        main_num = intent.getIntExtra("main_num", main_num);
 
         Log.d("subNum == >", String.valueOf(subNum));
 
-        String requestURL = "http://192.168.14.45:8805/meto/and/subplan/listview.do";
+        String requestURL = "http://192.168.14.47:8805/meto/and/subplan/listview.do";
         try{
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
@@ -108,8 +118,7 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.edit_subplan) {
-            String main_num = "77";
-            String requestURL = "http://192.168.14.45:8805/meto/and/subplan/edit.do";
+            String requestURL = "http://192.168.14.47:8805/meto/and/subplan/edit.do";
 
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
@@ -124,6 +133,7 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
             } else if (tmp.equals("명소 사진찍기")) {
                 mission_chk = "p";
             }
+            Toast.makeText(getApplicationContext(),title.getText().toString(),Toast.LENGTH_SHORT).show();
 
             paramList.add(new BasicNameValuePair("sub_title", title.getText().toString()));
             paramList.add(new BasicNameValuePair("start_time", start_time.getSelectedItem().toString()));
@@ -133,7 +143,9 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
             paramList.add(new BasicNameValuePair("memo", memo.getText().toString()));
             paramList.add(new BasicNameValuePair("photo", photo.getText().toString()));
             paramList.add(new BasicNameValuePair("sub_num", String.valueOf(subNum)));
-            paramList.add(new BasicNameValuePair("main_num", main_num));
+            paramList.add(new BasicNameValuePair("main_num", Integer.toString(main_num)));
+            paramList.add(new BasicNameValuePair("llh_x", String.valueOf(latitude)));
+            paramList.add(new BasicNameValuePair("llh_y", String.valueOf(longitude)));
 
             try {
                 post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
@@ -142,21 +154,18 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
                 Log.d("sendPost == >", e.toString());
             }
             finish();
-            Intent intent = new Intent(getApplicationContext(), ListSubplan.class);
-            startActivity(intent);
+
         } else if (v.getId() == R.id.edit_subplan_cancel) {
             finish();
-            Intent intent = new Intent(getApplicationContext(), ListSubplan.class);
-            startActivity(intent);
-        } else if(v.getId() == R.id.edit_subplan_del){
-            String requestURL = "http://192.168.14.45:8805/meto/and/subplan/del.do";
 
-            String main_num = "77";
+        } else if(v.getId() == R.id.edit_subplan_del){
+            String requestURL = "http://192.168.14.47:8805/meto/and/subplan/del.do";
+
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
             List<NameValuePair> paramList = new ArrayList<>();
             paramList.add(new BasicNameValuePair("subnum", String.valueOf(subNum)));
-            paramList.add(new BasicNameValuePair("mainnum", main_num));
+            paramList.add(new BasicNameValuePair("mainnum", Integer.toString(main_num)));
 
             try {
                 post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
@@ -166,9 +175,24 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
             }
 
             finish();
-            Intent intent = new Intent(getApplicationContext(), ListSubplan.class);
+        }else if(v.getId() == R.id.edit_subplan_place){
+            Intent intent = new Intent(getApplicationContext(), SelectLocation.class);
+            startActivityForResult(intent, 100);
+        }else if(v.getId() == R.id.add_photo){
+            Intent intent=new Intent(getApplicationContext(),CameraActivity.class);
+            intent.putExtra("sub_num",String.valueOf(subNum));
             startActivity(intent);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        latitude = data.getDoubleExtra("latitude",0);
+        longitude = data.getDoubleExtra("longitude",0);
+        place.setText(data.getStringExtra("place"));
+
+        Log.d("위도 경도==>",""+latitude+"/"+longitude);
     }
 
     public SubPlanDTO getXML(InputStream is){
@@ -221,7 +245,6 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
         }catch (IOException e){
             e.printStackTrace();
         }
-        Toast.makeText(getApplicationContext(), dto.getStart_time(), Toast.LENGTH_SHORT).show();
         return dto;
     }
 

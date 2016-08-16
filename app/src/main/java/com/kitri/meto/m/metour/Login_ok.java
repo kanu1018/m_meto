@@ -3,6 +3,7 @@ package com.kitri.meto.m.metour;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -13,6 +14,8 @@ public class Login_ok extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_ok);
+        Log.d("id가 유지되나?",SessionControl.id);
+
     }
 
     public void editform(View v){

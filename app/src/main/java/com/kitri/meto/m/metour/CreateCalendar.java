@@ -4,17 +4,34 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Administrator on 2016-08-08.
  */
 public class CreateCalendar extends Activity implements View.OnClickListener {
+
+    List<ScheduleDTO> list;
 
     int calendar_box[] = {R.id.calendar00, R.id.calendar01, R.id.calendar02, R.id.calendar03, R.id.calendar04, R.id.calendar05, R.id.calendar06,
             R.id.calendar10, R.id.calendar11, R.id.calendar12, R.id.calendar13, R.id.calendar14, R.id.calendar15, R.id.calendar16,
@@ -26,10 +43,12 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
     TextView calView[] = new TextView[calendar_box.length];
     TextView MonthView;
 
-
-
     Calendar now = Calendar.getInstance();
     Calendar cal = Calendar.getInstance();
+
+    TextView DelBtn;
+    TextView ListBtn;
+    TextView ShareBtn;
 
     int now_y;
     int now_m;
@@ -42,11 +61,23 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
     int week_num;
     int day;
 
+    int main_writer;
+
+    Intent intent_get;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calendar);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        intent_get = getIntent();
+        main_writer = intent_get.getExtras().getInt("main_writer",0);
 
 
         MonthView = (TextView) findViewById(R.id.calendarMonth);
@@ -59,20 +90,40 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
         TextView NextMonth = (TextView) findViewById(R.id.calNextMonth);
         NextMonth.setOnClickListener(this);
 
+        ImageView closeBtn = (ImageView) findViewById(R.id.calendarCloseBtn);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
+
+        ListBtn = (TextView) findViewById(R.id.calendarListBtn);
+        ListBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CreateCalendar.this, MainPlanList.class);
+                intent.putExtra("main_writer", main_writer);
+                intent.putExtra("flag",2);
+                startActivity(intent);
+            }
+        });
 
 
         now_y = now.get(Calendar.YEAR);
         now_m = now.get(Calendar.MONTH);
         now_d = now.get(Calendar.DAY_OF_MONTH);
-
         cal.set(now_y, now_m, 1);
         dow = cal.get(Calendar.DAY_OF_WEEK);
 
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         CalCalendar(now_y, now_m, dow);
 
-
     }
+
+
 
     @Override
     public void onClick(View v) {
@@ -99,62 +150,110 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
         week_num = 1;
         day = 1;
 
-        for (int index = 0; index < calendar_box.length; index++) {
-            if (week_num < dow) {
-                week_num += 1;
-                calView[index].setBackgroundColor(Color.rgb(223, 220, 216));
-                calView[index].setText("");
-            } else {
-                if (isDate(Y, M, day)) {
-                    //날짜 존재
-                    if (Y == now_y && M == now_m && day == now_d) {
-                        calView[index].setText(Integer.toString(day));
-                        calView[index].setBackgroundColor(Color.rgb(242, 76, 39));
-                        calView[index].setTag(1);
-                        calView[index].setTextColor(Color.rgb(255, 255, 255));
-                        // Today
-                    } else {
-                        calView[index].setText(Integer.toString(day));
-                        calView[index].setBackgroundColor(Color.rgb(255, 255, 249));
-                        calView[index].setTextColor(Color.rgb(40, 40, 50));
-                        calView[index].setTag(0);
-                        // Not Today
-                    }
+        boolean flag_reserved =false;
+        boolean flag_today =false;
 
-                    calView[index].setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+        try {
 
-                            TextView Daytxt = (TextView) findViewById(v.getId());
-                            int Year = cal.get(Calendar.YEAR);
-                            int Month = cal.get(Calendar.MONTH)+1;
-                            int Day =  Integer.parseInt(Daytxt.getText().toString());
-                            int flag = Integer.parseInt(v.getTag().toString());
+            String requestURL = "http://192.168.14.21:8805/meto/and/schedule/getList.do?main_writer="+main_writer;
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(requestURL);
+            List<NameValuePair> paramList = new ArrayList<>();
 
-                            String MSG = Year + "년 " + Month + "월" + Day +"일";
+            post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
 
-                            Toast.makeText(getApplicationContext(),MSG, Toast.LENGTH_SHORT).show();
+            HttpResponse response = client.execute(post);
+            HttpEntity entity = response.getEntity();
+            InputStream is = entity.getContent();
 
-                            Intent intent = new Intent(CreateCalendar.this, MainPlanAnd.class);
+            list = getXML(is);
 
-                            intent.putExtra("year",Year);
-                            intent.putExtra("month",Month);
-                            intent.putExtra("day",Day);
-                            intent.putExtra("flag",flag);
-
-                            startActivity(intent);
-
-                        }
-                    });
-                    day += 1;
-                } else {
-                    //날짜 존재x
+            for (int index = 0; index < calendar_box.length; index++) {
+                if (week_num < dow) {
+                    week_num += 1;
                     calView[index].setBackgroundColor(Color.rgb(223, 220, 216));
                     calView[index].setText("");
+                } else {
+                    if (isDate(Y, M, day)) {
+
+                        //날짜 존재
+                        if (Y == now_y && M == now_m && day == now_d) {
+                            calView[index].setBackgroundColor(Color.rgb(242, 76, 39));
+                            flag_today = true;
+                            calView[index].setTag(0);
+                            calView[index].setTextColor(Color.rgb(255, 255, 255));
+                            // Today
+                        } else {
+                            // Not Today
+                            calView[index].setBackgroundColor(Color.rgb(255, 255, 249));
+                            calView[index].setTextColor(Color.rgb(40, 40, 50));
+                            flag_today =false;
+                            calView[index].setTag(0);
+                        }
+                        calView[index].setText(Integer.toString(day));
+
+                        for (int k = 0; k < list.size(); k++) {
+                            if (Y == list.get(k).getYear() && (M + 1) == list.get(k).getMonth() && day == list.get(k).getDay()) {
+                                calView[index].setTag(list.get(k).getMain_num());
+                                flag_reserved = true;
+                                break;
+                            } else {
+                                flag_reserved = false;
+                            }
+
+                        }
+
+                        //Tag 값 지정 및 색깔 확정
+                        if(flag_today&&flag_reserved){
+                            //미투데이
+                            calView[index].setBackgroundColor(Color.rgb(51,48,140));
+                            calView[index].setTextColor(Color.rgb(255, 255, 255));
+
+                        }else if(flag_reserved&&!flag_today){
+                            //미투
+                            calView[index].setBackgroundColor(Color.rgb(26, 188, 156));
+                            calView[index].setTextColor(Color.rgb(255, 255, 255));
+                        }
+
+
+                        calView[index].setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                TextView Daytxt = (TextView) findViewById(v.getId());
+                                int Year = cal.get(Calendar.YEAR);
+                                int Month = cal.get(Calendar.MONTH) + 1;
+                                int Day = Integer.parseInt(Daytxt.getText().toString());
+                                int main_num = Integer.parseInt(v.getTag().toString());
+
+                                Intent intent = new Intent(CreateCalendar.this, MainPlanAnd.class);
+
+                                intent.putExtra("year", Year);
+                                intent.putExtra("month", Month);
+                                intent.putExtra("day", Day);
+                                intent.putExtra("main_num", main_num);
+                                intent.putExtra("main_writer", main_writer);
+
+                                startActivity(intent);
+
+                            }
+                        });
+                        day += 1;
+                    } else {
+                        //날짜 존재x
+                        calView[index].setBackgroundColor(Color.rgb(223, 220, 216));
+                        calView[index].setText("");
+                    }
                 }
             }
 
+
+
+
+        }catch (Exception e) {
+          Log.d("sendPost===> ", e.toString());
         }
+
 
     }
 
@@ -196,5 +295,54 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
         return true;
     }
 
+
+    public List<ScheduleDTO> getXML(InputStream is) {
+        List<ScheduleDTO> list = new ArrayList<>();
+
+        try {
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser parser = factory.newPullParser();
+            parser.setInput(is, "UTF-8");
+
+            int eventType = parser.getEventType();
+
+            ScheduleDTO dto = null;
+            while(eventType != XmlPullParser.END_DOCUMENT) {
+
+                switch (eventType) {
+                    case XmlPullParser.START_TAG :
+
+                        String startTag = parser.getName();
+
+                        if (startTag.equals("schedule")) {
+                            dto = new ScheduleDTO();
+                        }
+                        if (dto != null) {
+                            if (startTag.equals("main_num")) {
+                                dto.setMain_num(Integer.parseInt(parser.nextText()));
+                            }else if (startTag.equals("year")) {
+                                dto.setYear(Integer.parseInt(parser.nextText()));
+                            } else if (startTag.equals("month")) {
+                                dto.setMonth(Integer.parseInt(parser.nextText()));
+                            } else if (startTag.equals("day")) {
+                                dto.setDay(Integer.parseInt(parser.nextText()));
+                            }
+                        }
+                        break;
+
+                    case XmlPullParser.END_TAG:
+                        String endTag = parser.getName();
+                        if (endTag.equals("schedule")) {
+                            list.add(dto);
+                        }
+                        break;
+                }
+                eventType = parser.next();
+            } // end of while
+        } catch(Exception e) {
+            Log.d("SelectActivityError",e.toString());
+        } // end of try
+        return list;
+    }
 
 }
