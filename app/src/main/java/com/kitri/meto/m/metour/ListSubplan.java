@@ -51,7 +51,7 @@ public class ListSubplan extends Activity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        String requestURL = "http://192.168.14.21:8805/meto/and/subplan/list.do";
+        String requestURL = "http://192.168.14.47:8805/meto/and/subplan/list.do";
 
         listSubplan = (LinearLayout)findViewById(R.id.list_subplan);
         listSubplan.removeAllViewsInLayout();
@@ -154,11 +154,19 @@ public class ListSubplan extends Activity {
 
 
         for(int i = 0; i < layoutSub.length; i++){
-            int subNum = Integer.parseInt(layoutSub[i].getTag().toString());
+            final int subNum = Integer.parseInt(layoutSub[i].getTag().toString());
             if(subNum != 0){
                 layoutSub[i].setBackgroundResource(R.drawable.line);
                 Button photo = new Button(this);
                 photo.setText("사진");
+                photo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent=new Intent(getApplicationContext(),CameraActivity.class);
+                        intent.putExtra("sub_num",String.valueOf(subNum));
+                        startActivity(intent);
+                    }
+                });
                 layoutSub[i].addView(photo);
             }
         }
