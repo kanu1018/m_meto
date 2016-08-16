@@ -10,11 +10,13 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +32,7 @@ public class CameraActivity extends AppCompatActivity {
     private ValueCallback<Uri[]> mFilePathCallback;
     private String mCameraPhotoPath;
     private String subnum;
+    private Button btn_chk,btn_can;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,21 @@ public class CameraActivity extends AppCompatActivity {
 
         WebView webView  = (WebView) findViewById(R.id.webview_);
         webView.getSettings().setJavaScriptEnabled(true);
+
+        btn_chk = (Button)findViewById(R.id.btn_chk);
+        btn_chk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        btn_can = (Button)findViewById(R.id.btn_can);
+        btn_can.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         // Enable pinch to zoom without the zoom buttons
         webView.getSettings().setBuiltInZoomControls(true);
