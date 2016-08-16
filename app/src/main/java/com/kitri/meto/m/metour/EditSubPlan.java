@@ -34,7 +34,7 @@ import java.util.List;
 public class EditSubPlan extends Activity implements View.OnClickListener {
     EditText title,  memo, photo, place;
     Spinner start_time, end_time, mission;
-    Button ok, cancel, del, place_select;
+    Button ok, cancel, del, place_select, addphoto;
     int subNum;
     int main_num;
 
@@ -62,11 +62,13 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
         cancel = (Button) findViewById(R.id.edit_subplan_cancel);
         del = (Button)findViewById(R.id.edit_subplan_del);
         place_select = (Button) findViewById(R.id.edit_subplan_place);
+        addphoto = (Button)findViewById(R.id.add_photo);
 
         ok.setOnClickListener(this);
         cancel.setOnClickListener(this);
         del.setOnClickListener(this);
         place_select.setOnClickListener(this);
+        addphoto.setOnClickListener(this);
 
         Intent intent = getIntent();
         subNum = intent.getIntExtra("subNum", subNum);
@@ -74,7 +76,7 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
 
         Log.d("subNum == >", String.valueOf(subNum));
 
-        String requestURL = "http://192.168.14.21:8805/meto/and/subplan/listview.do";
+        String requestURL = "http://192.168.14.47:8805/meto/and/subplan/listview.do";
         try{
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
@@ -116,7 +118,7 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.edit_subplan) {
-            String requestURL = "http://192.168.14.21:8805/meto/and/subplan/edit.do";
+            String requestURL = "http://192.168.14.47:8805/meto/and/subplan/edit.do";
 
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
@@ -157,7 +159,7 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
             finish();
 
         } else if(v.getId() == R.id.edit_subplan_del){
-            String requestURL = "http://192.168.14.21:8805/meto/and/subplan/del.do";
+            String requestURL = "http://192.168.14.47:8805/meto/and/subplan/del.do";
 
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
@@ -176,6 +178,10 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
         }else if(v.getId() == R.id.edit_subplan_place){
             Intent intent = new Intent(getApplicationContext(), SelectLocation.class);
             startActivityForResult(intent, 100);
+        }else if(v.getId() == R.id.add_photo){
+            Intent intent=new Intent(getApplicationContext(),CameraActivity.class);
+            intent.putExtra("sub_num",String.valueOf(subNum));
+            startActivity(intent);
         }
     }
 
