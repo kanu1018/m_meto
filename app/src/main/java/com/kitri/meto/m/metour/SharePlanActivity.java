@@ -2,6 +2,7 @@ package com.kitri.meto.m.metour;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
@@ -121,7 +122,10 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
         StrictMode.setThreadPolicy(policy);
 
         //share_num 받아오기
-        share_num = 9;
+        Intent in = getIntent();
+
+        share_num = Integer.parseInt(in.getStringExtra("share_num"));
+        /*share_num = 9;*/
 
         sview = (LinearLayout)findViewById(R.id.sview);
         shareplan(share_num);
