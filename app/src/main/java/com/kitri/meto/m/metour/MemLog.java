@@ -80,7 +80,7 @@ public class MemLog extends Activity{
                 } catch(Exception e) {
                     Log.d("sendPost===> ", e.toString());
                 }
-                
+
 
                 if(mem_num!=0){
                     Intent intent = new Intent(getApplicationContext(),SearchByCategory.class);

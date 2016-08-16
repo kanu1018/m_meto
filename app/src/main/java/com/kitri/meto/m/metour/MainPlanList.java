@@ -83,6 +83,17 @@ public class MainPlanList extends Activity{
         alert_chk = new AlertDialog.Builder(this);
         Button DelBtn = (Button) findViewById(R.id.ListDelBtn);
         Button ShareBtn = (Button) findViewById(R.id.ListShareBtn);
+
+        ShareBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alert_chk.setTitle("공유확인");
+                alert_chk.setMessage("선택하신 항목을 공유하시겠습니까?");
+                alert_chk.setPositiveButton("Yes",cofirm_share);
+                alert_chk.setNegativeButton("No",null);
+                alert_chk.show();
+            }
+        });
         DelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -263,7 +274,23 @@ public class MainPlanList extends Activity{
 
     }
 
-
+    DialogInterface.OnClickListener cofirm_share = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            String main_num="";
+            for(int i =0;i<number_plan;i++){
+                if(chkbox[i].isChecked()){
+                    int m_num = Integer.parseInt(chkbox[i].getTag().toString());
+                    main_num += m_num+"/";
+                }
+            }
+            if(!main_num.equals("")) {
+                main_num.subSequence(0,main_num.length()-1);
+                ShareSchedule(main_num);
+            }
+            finish();
+        }
+    };
 
     DialogInterface.OnClickListener cofirm_delete = new DialogInterface.OnClickListener() {
         @Override
@@ -285,6 +312,27 @@ public class MainPlanList extends Activity{
         try{
             String requestURL = "http://192.168.14.21:8805/meto/and/schedule/deleteMainSchedule.do?main_num="+main_num;
             HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(requestURL);
+            List<NameValuePair> paramList = new ArrayList<>();
+
+            post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
+            HttpResponse response = client.execute(post);
+            HttpEntity entity = response.getEntity();
+
+
+        }catch (Exception e) {
+            Log.d("sendPost===> ", e.toString());
+        }
+    }
+
+    public void ShareSchedule(String main_num){
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        try{
+            String requestURL = "http://192.168.14.21:8805/meto/and/subplan/combination.do?main_num="+main_num;
+            HttpClient client = SessionControl.getHttpclient();
+            //HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
             List<NameValuePair> paramList = new ArrayList<>();
 
