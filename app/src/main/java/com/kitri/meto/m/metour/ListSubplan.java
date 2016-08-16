@@ -51,7 +51,7 @@ public class ListSubplan extends Activity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        String requestURL = "http://192.168.14.21:8805/meto/and/subplan/list.do";
+        String requestURL = "http://192.168.14.4:8805/meto/and/subplan/list.do";
 
         listSubplan = (LinearLayout)findViewById(R.id.list_subplan);
         listSubplan.removeAllViewsInLayout();
