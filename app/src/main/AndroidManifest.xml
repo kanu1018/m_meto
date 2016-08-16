@@ -28,21 +28,21 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC4LTjmmOQv2x2oZRvozDB2ef3X_7OOGGw"></meta-data>
 
-        <activity android:name=".meto_MainActivity">
-        </activity>
-        <activity android:name=".MemIns">        </activity>
-        <activity android:name=".Login_ok"></activity>
-        <activity android:name=".MemLog">
-
-        </activity>
         <activity android:name=".SearchByCategory">
-
-
         </activity>
+        <activity android:name=".MemIns">       </activity>
+        <activity android:name=".Login_ok"></activity>
 
         <activity android:name=".SharePlanActivity"></activity>
 
         <activity android:name=".CreateCalendar"></activity>
+
+
+
+        <activity android:name=".MemLog">
+
+        </activity>
+
         <activity android:name=".MainPlanAnd"></activity>
         <activity android:name=".MainPlanList"></activity>
         <activity android:name=".ListSubplan"></activity>
