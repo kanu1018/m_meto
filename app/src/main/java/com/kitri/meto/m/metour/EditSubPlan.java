@@ -32,13 +32,15 @@ import java.util.List;
  * Created by Administrator on 2016-08-08.
  */
 public class EditSubPlan extends Activity implements View.OnClickListener {
-    EditText title, place, memo, photo;
+    EditText title,  memo, photo, place;
     Spinner start_time, end_time, mission;
-    Button ok, cancel, del;
+    Button ok, cancel, del, place_select;
     int subNum;
     int main_num;
 
     SubPlanDTO dto;
+
+    Double latitude, longitude;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,8 +50,9 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
         StrictMode.setThreadPolicy(policy);
 
         title = (EditText) findViewById(R.id.edit_subplan_title);
-        place = (EditText) findViewById(R.id.edit_subplan_place);
         memo = (EditText) findViewById(R.id.edit_subplan_memo);
+        place = (EditText) findViewById(R.id.edit_subplan_place_text);
+
         start_time = (Spinner) findViewById(R.id.edit_subplan_starttime);
         end_time = (Spinner) findViewById(R.id.edit_subplan_endtime);
         mission = (Spinner) findViewById(R.id.edit_subplan_mission);
@@ -58,9 +61,12 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
         ok = (Button) findViewById(R.id.edit_subplan);
         cancel = (Button) findViewById(R.id.edit_subplan_cancel);
         del = (Button)findViewById(R.id.edit_subplan_del);
+        place_select = (Button) findViewById(R.id.edit_subplan_place);
+
         ok.setOnClickListener(this);
         cancel.setOnClickListener(this);
         del.setOnClickListener(this);
+        place_select.setOnClickListener(this);
 
         Intent intent = getIntent();
         subNum = intent.getIntExtra("subNum", subNum);
@@ -136,6 +142,8 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
             paramList.add(new BasicNameValuePair("photo", photo.getText().toString()));
             paramList.add(new BasicNameValuePair("sub_num", String.valueOf(subNum)));
             paramList.add(new BasicNameValuePair("main_num", Integer.toString(main_num)));
+            paramList.add(new BasicNameValuePair("llh_x", String.valueOf(latitude)));
+            paramList.add(new BasicNameValuePair("llh_y", String.valueOf(longitude)));
 
             try {
                 post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
@@ -165,7 +173,20 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
             }
 
             finish();
+        }else if(v.getId() == R.id.edit_subplan_place){
+            Intent intent = new Intent(getApplicationContext(), SelectLocation.class);
+            startActivityForResult(intent, 100);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        latitude = data.getDoubleExtra("latitude",0);
+        longitude = data.getDoubleExtra("longitude",0);
+        place.setText(data.getStringExtra("place"));
+
+        Log.d("위도 경도==>",""+latitude+"/"+longitude);
     }
 
     public SubPlanDTO getXML(InputStream is){
