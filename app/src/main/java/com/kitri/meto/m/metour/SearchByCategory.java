@@ -228,12 +228,14 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
                 params.bottomMargin=30;
                 text3.setText("♥"+sDto.getMetoo());
                 text3.setLayoutParams(params);
-                /*text2.setOnClickListener(new View.OnClickListener() {
+                final SharePlanDTO finalSDto = sDto;
+                text2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                                                                               쉐어플랜 상세보기 넣으면 됨!
+                        Intent in = new Intent(getApplicationContext(),SharePlanActivity.class);
+                        in.putExtra("share_num",String.valueOf(finalSDto.getShare_num()));
                     }
-                });*/
+                });
 
                 lay1.addView(text2);
                 lay1.addView(text3);
