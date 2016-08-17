@@ -28,7 +28,9 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ToDayListSubplan extends Activity {
@@ -40,6 +42,10 @@ public class ToDayListSubplan extends Activity {
     LinearLayout.LayoutParams layout_1 = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT,1);
 
     Intent intent;
+
+    // GPSTracker class
+    private GpsInfo gps;
+    private double lat1,lat2,lon1,lon2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,16 +192,81 @@ public class ToDayListSubplan extends Activity {
                 layoutSub[i].setBackgroundResource(R.drawable.line);
                 Button location = new Button(this);
                 location.setText("위치");
-                location.setTag(new LLH(list.get(i).getLlh_x(),list.get(i).getLlh_y()));
+                SubPlanListDTO sdto = new SubPlanListDTO();
+                sdto = list.get(i);
+                location.setTag(sdto);
                 location.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         /*Intent intent=new Intent(getApplicationContext(),SampleActivity21.class);
                         intent.putExtra("sub_num",String.valueOf(subNum1));
                         startActivity(intent);*/
-                        LLH llh = (LLH)v.getTag();
-                        Toast.makeText(getApplicationContext(),"위치 x="+llh.getLlh_x()+"y="+llh.getLlh_y(),Toast.LENGTH_SHORT).show();
+                        SubPlanListDTO llh = (SubPlanListDTO)v.getTag();
+                        //Toast.makeText(getApplicationContext(),"위치 x="+llh.getLlh_x()+"y="+llh.getLlh_y(),Toast.LENGTH_SHORT).show();
                         ////여기수정하면됨......
+                        Date date = new Date();
+                        SimpleDateFormat transFormat = new SimpleDateFormat("HH:mm");
+                        String to = transFormat.format(date);
+                        System.out.println(to);
+
+                        String tos[] = to.split(":");
+                        String times[] = llh.getTime().split("~");
+                        String start_times[] = times[0].split(":");
+                        String end_times[] = times[1].split(":");
+
+                        lat2 = Double.parseDouble(llh.getLlh_x());
+                        lon2 = Double.parseDouble(llh.getLlh_y());
+                        gps = new GpsInfo(ToDayListSubplan.this);
+
+                        if(Integer.parseInt(tos[0]) == Integer.parseInt(start_times[0])){
+                            if(Integer.parseInt(tos[1])>=Integer.parseInt(start_times[1])){
+                                // GPS 사용유무 가져오기
+                                if (gps.isGetLocation()) {
+
+                                    double latitude = gps.getLatitude();
+                                    double longitude = gps.getLongitude();
+                                    lat1 = latitude;
+                                    lon1 = longitude;
+                                    //txtLat.setText(String.valueOf(latitude));
+                                    //txtLon.setText(String.valueOf(longitude));
+
+                                    if(calDistance(lat1,lon1,lat2,lon2) <= 500){
+                                        Toast.makeText(
+                                                getApplicationContext(),
+                                                "당신의 위치1 - \n위도: " + latitude + "\n경도: " + longitude+"\n 위치비교값:"+calDistance(lat1,lon1,lat2,lon2)+"",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                } else {
+                                    // GPS 를 사용할수 없으므로
+                                    gps.showSettingsAlert();
+                                }
+                            }
+                        } else if(Integer.parseInt(tos[0]) == Integer.parseInt(end_times[0])){
+                            if(Integer.parseInt(tos[1])<=Integer.parseInt(end_times[1])){
+                                // GPS 사용유무 가져오기
+                                if (gps.isGetLocation()) {
+
+                                    double latitude = gps.getLatitude();
+                                    double longitude = gps.getLongitude();
+                                    lat1 = latitude;
+                                    lon1 = longitude;
+                                    //txtLat.setText(String.valueOf(latitude));
+                                    //txtLon.setText(String.valueOf(longitude));
+                                    if(calDistance(lat1,lon1,lat2,lon2) <= 500){
+                                        Toast.makeText(
+                                                getApplicationContext(),
+                                                "당신의 위치2 - \n위도: " + latitude + "\n경도: " + longitude+"\n 위치비교값:"+calDistance(lat1,lon1,lat2,lon2)+"",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+
+                                } else {
+                                    // GPS 를 사용할수 없으므로
+                                    gps.showSettingsAlert();
+                                }
+                            }
+                        }
+
+
                     }
                 });
                 layoutSub[i].addView(location,layout_1);
@@ -259,5 +330,31 @@ public class ToDayListSubplan extends Activity {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public double calDistance(double lat1, double lon1, double lat2, double lon2){
+
+        double theta, dist;
+        theta = lon1 - lon2;
+        dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1))
+                * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+
+        dist = dist * 60 * 1.1515;
+        dist = dist * 1.609344;    // 단위 mile 에서 km 변환.
+        dist = dist * 1000.0;      // 단위  km 에서 m 로 변환
+
+        return dist;
+    }
+
+    // 주어진 도(degree) 값을 라디언으로 변환
+    private double deg2rad(double deg){
+        return (double)(deg * Math.PI / (double)180d);
+    }
+
+    // 주어진 라디언(radian) 값을 도(degree) 값으로 변환
+    private double rad2deg(double rad){
+        return (double)(rad * (double)180d / Math.PI);
     }
 }
