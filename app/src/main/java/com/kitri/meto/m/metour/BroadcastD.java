@@ -24,11 +24,14 @@ public class BroadcastD extends BroadcastReceiver{
                 .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setContentIntent(pendingIntent).setAutoCancel(true);
 
         //// TODO: 2016-08-12 알림 와서 버튼 누를때 액션 수정해야할곳
-        Intent intent_ok = new Intent(context,ListSubplan.class);
+        //Intent intent_ok = new Intent(context,ListSubplan.class);
+        Intent intent_ok = new Intent(context,MainActivity01.class);
         intent_ok.putExtra("main_num", intent.getIntExtra("main_num", 0));
+        intent_ok.putExtra("mem_num",intent.getIntExtra("mem_num",0));
         PendingIntent OKpendingIntent = PendingIntent.getActivity(context, intent.getIntExtra("main_num", 0), intent_ok, PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent NOpendingIntent = PendingIntent.getActivity(context, intent.getIntExtra("main_num", 0), new Intent(context,MemLog.class ), PendingIntent.FLAG_UPDATE_CURRENT);
-
+        //이부분 대양쓰 수정중.
+        //builder.addAction(R.mipmap.ic_launcher, "Yes!", OKpendingIntent);
         builder.addAction(R.mipmap.ic_launcher, "Yes!", OKpendingIntent);
         builder.addAction(R.mipmap.ic_launcher, "No!", NOpendingIntent);
 

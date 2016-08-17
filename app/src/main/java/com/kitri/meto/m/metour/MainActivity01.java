@@ -2,64 +2,75 @@ package com.kitri.meto.m.metour;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Administrator on 2016-08-16.
  */
-
-public class MainActivity extends Activity {
+public class MainActivity01 extends Activity {
     // SharedPreferences에 저장할 때 key 값으로 사용됨
     public static final String PROPERTY_REG_ID = "registration_id";
 
     // SharedPreferences에 저장할 때 key 값으로 사용됨
     public static final String PROPERTY_APP_VERSION = "appVersion";
 
-    static String SENDER_ID = "metour-140501"; // 프로젝트 아이디
-    static String SERVER_URL = "http://192.168.14.19:8805/meto/gcm/gcmForm.do"; // 서버 주소
+    static String SENDER_ID = "1043038372115"; // 프로젝트 아이디
+    static String SERVER_URL = "http://192.168.14.19:8805/meto/gcm/gcmsend11.do"; // 서버 주소
     GoogleCloudMessaging gcm;
     Context context;
-    String regid;
+    String regid,key,today;
     private Button btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.loading);
         context = this;
-
-        btn = (Button) findViewById(R.id.button_register);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HttpUtil hu = new HttpUtil(context);
-                String[] params = {SERVER_URL, "KEY:1234", "REG:" + regid};
-                hu.execute(params);
-            }
-        });
 
         // gcm 등록
         gcm = GoogleCloudMessaging.getInstance(this); // GoogleCloudMessaging 클래스의 인스턴스를 생성한다
         regid = getRegistrationId(context); // 기존에 발급받은 등록 아이디를 가져온다
-        Log.d("dregid=",regid);
+        Log.d("**이부분 확인 : regid=",regid);
         if (regid.isEmpty()) { // 기존에 발급된 등록 아이디가 없으면 registerInBackground 메서드를 호출해 GCM 서버에 발급을 요청한다.
             System.out.println("************************************************* gcm 발급");
             registerInBackground();
         }
 
         System.out.println("************************************************* gcm regid : " + regid);
+
+        Date date = new Date();
+        SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String to = transFormat.format(date);
+        Log.d("날짜다",date.toString());
+        Intent intent = getIntent();
+        key = "KEY:";
+        key += intent.getIntExtra("mem_num",0);
+        today = "TODAY:"+to;
+        Handler mHandler = new Handler();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                HttpUtil hu = new HttpUtil(context);
+                String[] params = {SERVER_URL, key, "REG:" + regid,today};
+                hu.execute(params);
+                finish();
+            }
+        }, 3500);
     }
 
     // 저장된 reg id 조회
@@ -151,7 +162,7 @@ public class MainActivity extends Activity {
         System.out.println("************************************************* 서버에 regid 전달 : " + regid);
 
         HttpUtil hu = new HttpUtil(context);
-        String[] params = {SERVER_URL, "KEY:1234", "REG:" + regid};
+        String[] params = {SERVER_URL, "KEY:1234", "REG:" + regid,today};
         hu.execute(params);
     }
 

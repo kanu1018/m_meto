@@ -78,7 +78,7 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
 
         intent_get = getIntent();
         main_writer = intent_get.getExtras().getInt("main_writer",0);
-
+        Log.d("main_writer:",main_writer+"");
 
         MonthView = (TextView) findViewById(R.id.calendarMonth);
         for (int i = 0; i < calendar_box.length; i++) {
@@ -155,7 +155,7 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
 
         try {
 
-            String requestURL = "http://192.168.14.21:8805/meto/and/schedule/getList.do?main_writer="+main_writer;
+            String requestURL = "http://192.168.14.19:8805/meto/and/schedule/getList.do?main_writer="+main_writer;
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
             List<NameValuePair> paramList = new ArrayList<>();
