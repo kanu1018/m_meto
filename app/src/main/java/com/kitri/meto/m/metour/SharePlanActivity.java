@@ -112,6 +112,10 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
     int num;
     String con;
 
+    //point
+    TextView sPoint;
+    int point;
+
     //oncreate
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,6 +174,9 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
         sTitle.setText("[공유글] "+share_title);
         sWriter = (TextView)findViewById(R.id.sWriter);
         sWriter.setText(wId);
+        sPoint = (TextView)findViewById(R.id.sPoint);
+        sPoint.setText("Point: "+point);
+
         //작성자 joinDto
         //sWriter.setText(writer);
         meto = (TextView)findViewById(R.id.meto);
@@ -290,10 +297,12 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
                                 dto.setLocation(parser.nextText());
                             } else if (startTag.equals("sMetoo")) {
                                 dto.setMetoo(Integer.parseInt(parser.nextText()));
-                            } else if (startTag.equals("sPoint")) {
+                            } else if (startTag.equals("sPointNum")) {
                                 dto.setPoint_num(Integer.parseInt(parser.nextText()));
                             } else if (startTag.equals("sId")) {
                                 dto.setId(parser.nextText());
+                            } else if (startTag.equals("sPoint")) {
+                                dto.setPoint(Integer.parseInt(parser.nextText()));
                             }
                         }
                         break;
@@ -501,6 +510,7 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
             metoo = sDto.getMetoo();
             point_num = sDto.getPoint_num();
             wId = sDto.getId();
+            point = sDto.getPoint();
 
             Log.d("share_title>>>>", share_title);
         } catch(Exception e) {
@@ -931,6 +941,9 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
             //좋아요 수 다시 setting
             shareplan(share_num);
             meto.setText(""+metoo);
+            //point 불러오기
+            shareplan(share_num);
+            sPoint.setText("Point: "+point);
 
         } else if (v.getId() == R.id.rAdd) {
             // 댓글 작성
