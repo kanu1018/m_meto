@@ -41,6 +41,11 @@ public class MainActivity01 extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading);
         context = this;
+        Date date = new Date();
+        SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String to = transFormat.format(date);
+        today = "TODAY:"+to;
+        Log.d("날짜다",date.toString());
 
         // gcm 등록
         gcm = GoogleCloudMessaging.getInstance(this); // GoogleCloudMessaging 클래스의 인스턴스를 생성한다
@@ -53,20 +58,17 @@ public class MainActivity01 extends Activity {
 
         System.out.println("************************************************* gcm regid : " + regid);
 
-        Date date = new Date();
-        SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String to = transFormat.format(date);
-        Log.d("날짜다",date.toString());
+
         Intent intent = getIntent();
         key = "KEY:";
-        key += intent.getIntExtra("mem_num",0);
-        today = "TODAY:"+to;
+        key += intent.getIntExtra("main_num",0)+"/"+intent.getIntExtra("mem_num",0)+"/"+to;
+
         Handler mHandler = new Handler();
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 HttpUtil hu = new HttpUtil(context);
-                String[] params = {SERVER_URL, key, "REG:" + regid,today};
+                String[] params = {SERVER_URL, key, "REG:" + regid};
                 hu.execute(params);
                 finish();
             }
@@ -162,7 +164,8 @@ public class MainActivity01 extends Activity {
         System.out.println("************************************************* 서버에 regid 전달 : " + regid);
 
         HttpUtil hu = new HttpUtil(context);
-        String[] params = {SERVER_URL, "KEY:1234", "REG:" + regid,today};
+        String[] params = {SERVER_URL, "KEY:1234", "REG:" + regid};
+        //String[] params = {SERVER_URL, "KEY:1234", "REG:" + regid,today};
         hu.execute(params);
     }
 

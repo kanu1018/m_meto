@@ -52,7 +52,7 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
     Intent intent;
     int mem_num;
     int mWidthPixels, mHeightPixels;
-
+    String id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +97,7 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
             }
         intent = getIntent();
         mem_num = intent.getExtras().getInt("mem_num",0);
-
+        id = intent.getStringExtra("id");
         Button btnMoveCalendar = (Button) findViewById(R.id.moveCalendar);
         btnMoveCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +112,7 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
             @Override
             public void onClick(View v) {
                 listsel.removeAllViews();
-                String requestURL = "http://192.168.14.47:8805/meto/and/share/list.do";
+                String requestURL = "http://192.168.14.19:8805/meto/and/share/list.do";
                 ArrayList<WebView> weblist = new ArrayList<WebView>();
 
 

@@ -45,12 +45,12 @@ public class HttpUtil extends AsyncTask<String, String, String> {
         String param1Value = params[1].split(":")[1];
         String param2Key = params[2].split(":")[0];
         String param2Value = params[2].split(":")[1];
-        String param3Key = params[3].split(":")[0];
-        String param3Value = params[3].split(":")[1];
+        //String param3Key = params[3].split(":")[0];
+        //String param3Value = params[3].split(":")[1];
         System.out.println("************************************************* 서버 호출 url : " + url);
-
-        paramString = param1Key  + "=" + param1Value + "&" + param2Key  + "=" + param2Value + "&" + param3Key  + "=" + param3Value;
-
+        //+ "&" + param3Key  + "=" + param3Value
+        paramString = param1Key  + "=" + param1Value + "&" + param2Key  + "=" + param2Value;
+        System.out.println("************************************************* 서버 param : " + paramString);
         try {
             URL obj = new URL(url + "?" + paramString);
             HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
@@ -99,7 +99,10 @@ public class HttpUtil extends AsyncTask<String, String, String> {
     protected void onPostExecute(String result) {
         JSONObject object = null;
         try {
-            object = new JSONObject(result);
+            ///코드추가-----------------------------daeyang
+            if(result !=null) {
+                object = new JSONObject(result);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -108,8 +111,10 @@ public class HttpUtil extends AsyncTask<String, String, String> {
         String rtn = "";
         try {
             // return 받은 Json 데이터
-            rtn = URLDecoder.decode(object.getString("DATA"), "UTF-8");
-            ((MainActivity) context).printToast(rtn);
+            if(object!=null) {
+                rtn = URLDecoder.decode(object.getString("DATA"), "UTF-8");
+                ((MainActivity) context).printToast(rtn);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
