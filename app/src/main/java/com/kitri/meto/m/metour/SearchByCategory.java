@@ -175,7 +175,7 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
             }
         });
 
-        String requestURL = "http://192.168.14.47:8805/meto/and/share/list.do";
+        String requestURL = "http://192.168.14.45:8805/meto/and/share/list.do";
         ArrayList<WebView> weblist = new ArrayList<WebView>();
 
 
@@ -234,6 +234,7 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
                     public void onClick(View v) {
                         Intent in = new Intent(getApplicationContext(),SharePlanActivity.class);
                         in.putExtra("share_num",String.valueOf(finalSDto.getShare_num()));
+                        startActivity(in);
                     }
                 });
 
