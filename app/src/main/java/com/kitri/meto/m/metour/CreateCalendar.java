@@ -77,8 +77,8 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
         super.onResume();
 
         intent_get = getIntent();
-        //main_writer = intent_get.getExtras().getInt("main_writer",1);
-        main_writer = 1;
+        main_writer = intent_get.getExtras().getInt("main_writer",0);
+        Log.d("main_writer:",main_writer+"");
 
         MonthView = (TextView) findViewById(R.id.calendarMonth);
         for (int i = 0; i < calendar_box.length; i++) {
@@ -288,24 +288,6 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
         c.setLenient(false);
         try {
             c.set(y, m, d);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             Date dt = c.getTime();
         } catch (IllegalArgumentException e) {
             return false;

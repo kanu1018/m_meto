@@ -1,14 +1,20 @@
 package com.kitri.meto.m.metour;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -43,6 +49,9 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
     Button popfin,popsearch;
     EditText location;
     Button btnSearchBest,btnSearchLocation,btnSearchGender,btnSearchAge;
+    Intent intent;
+    int mem_num;
+    int mWidthPixels, mHeightPixels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +69,112 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
         btnSearchLocation.setOnClickListener(this);
         btnSearchGender.setOnClickListener(this);
         btnSearchAge.setOnClickListener(this);
+
+        WindowManager w = getWindowManager();
+        Display d = w.getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        d.getMetrics(metrics);
+        // since SDK_INT = 1;
+        mWidthPixels = metrics.widthPixels;
+        mHeightPixels = metrics.heightPixels;
+
+        // 상태바와 메뉴바의 크기를 포함해서 재계산
+        if (Build.VERSION.SDK_INT >= 14 && Build.VERSION.SDK_INT < 17)
+            try {
+                mWidthPixels = (Integer) Display.class.getMethod("getRawWidth").invoke(d);
+                mHeightPixels = (Integer) Display.class.getMethod("getRawHeight").invoke(d);
+            } catch (Exception ignored) {
+            }
+        // 상태바와 메뉴바의 크기를 포함
+        if (Build.VERSION.SDK_INT >= 17)
+            try {
+                Point realSize = new Point();
+                Display.class.getMethod("getRealSize", Point.class).invoke(d, realSize);
+                mWidthPixels = realSize.x;
+                mHeightPixels = realSize.y;
+            } catch (Exception ignored) {
+
+            }
+        intent = getIntent();
+        mem_num = intent.getExtras().getInt("mem_num",0);
+
+        Button btnMoveCalendar = (Button) findViewById(R.id.moveCalendar);
+        btnMoveCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent_new = new Intent(getApplicationContext(), CreateCalendar.class);
+                intent_new.putExtra("main_writer", mem_num);
+                startActivity(intent_new);
+            }
+        });
+        Button btnMoveShareList = (Button)findViewById(R.id.moveShareList);
+        btnMoveShareList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listsel.removeAllViews();
+                String requestURL = "http://192.168.14.47:8805/meto/and/share/list.do";
+                ArrayList<WebView> weblist = new ArrayList<WebView>();
+
+
+                HttpClient client   = new DefaultHttpClient();
+                HttpPost post    = new HttpPost(requestURL);
+                List<NameValuePair> paramList = new ArrayList<NameValuePair>();
+                SharePlanDTO sDto;
+                List<SharePlanDTO> slist;
+
+                try {
+                    post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
+                    HttpResponse response = client.execute(post);
+                    HttpEntity entity = response.getEntity();
+                    InputStream is = entity.getContent();
+                    slist = getXML(is);
+                    LinearLayout laysub[] = new LinearLayout[slist.size()];
+
+
+                    for(int i = 0;i<slist.size();i++){
+                        laysub[i] = new LinearLayout(getApplicationContext());
+                        laysub[i].setOrientation(LinearLayout.VERTICAL);
+                        sDto = slist.get(i);
+                        TextView text1 = new TextView(getApplicationContext());
+                        text1.setText(sDto.getId()+" "+sDto.getPhoto());
+                        WebView wv1 = new WebView(getApplicationContext());
+                        weblist.add(wv1);
+                        wv1.loadUrl(sDto.getPhoto());
+                        wv1.setWebViewClient(new webClient());
+                        WebSettings set = wv1.getSettings();
+                        set.setJavaScriptEnabled(true);
+                        set.setBuiltInZoomControls(true);
+
+                        LinearLayout lay1 = new LinearLayout(getApplicationContext());
+                        lay1.setOrientation(LinearLayout.HORIZONTAL);
+                        TextView text2 = new TextView(getApplicationContext());
+                        text2.setText(sDto.getShare_title());
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                0, LinearLayout.LayoutParams.MATCH_PARENT);
+                        params.weight = 9.0f;
+                        text2.setLayoutParams(params);
+                        TextView text3 = new TextView(getApplicationContext());
+                        params = new LinearLayout.LayoutParams(
+                                0, LinearLayout.LayoutParams.MATCH_PARENT);
+                        params.weight = 1.0f;
+                        params.bottomMargin=30;
+                        text3.setText("♥"+sDto.getMetoo());
+                        text3.setLayoutParams(params);
+
+                        lay1.addView(text2);
+                        lay1.addView(text3);
+                        laysub[i].addView(text1);
+                        laysub[i].addView(wv1);
+                        laysub[i].addView(lay1);
+
+                        listsel.addView(laysub[i]);
+                    }
+                } catch(Exception e) {
+                    Log.d("sendPost===> ", e.toString());
+                }
+            }
+        });
+
         String requestURL = "http://192.168.14.47:8805/meto/and/share/list.do";
         ArrayList<WebView> weblist = new ArrayList<WebView>();
 
@@ -113,6 +228,14 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
                 params.bottomMargin=30;
                 text3.setText("♥"+sDto.getMetoo());
                 text3.setLayoutParams(params);
+                final SharePlanDTO finalSDto = sDto;
+                text2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent in = new Intent(getApplicationContext(),SharePlanActivity.class);
+                        in.putExtra("share_num",String.valueOf(finalSDto.getShare_num()));
+                    }
+                });
 
                 lay1.addView(text2);
                 lay1.addView(text3);
@@ -206,7 +329,8 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
             View layout = inflater.inflate(R.layout.popupage,
                     (ViewGroup) findViewById(R.id.popup_element));
 
-            pwindo = new PopupWindow(layout, 600, 230, true);
+            pwindo = new PopupWindow(layout,mWidthPixels-10, mHeightPixels-1550, true);
+
             pwindo.showAtLocation(layout, Gravity.CENTER, 0, 0);
 
             popsearch = (Button) layout.findViewById(R.id.popsearch);
@@ -236,7 +360,7 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
             View layout = inflater.inflate(R.layout.popupgender,
                     (ViewGroup) findViewById(R.id.popup_element));
 
-            pwindo = new PopupWindow(layout, 600, 230, true);
+            pwindo = new PopupWindow(layout,mWidthPixels-400, mHeightPixels-1550, true);
             pwindo.showAtLocation(layout, Gravity.CENTER, 0, 0);
 
             popsearch = (Button) layout.findViewById(R.id.popsearch);
@@ -313,7 +437,7 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
             View layout = inflater.inflate(R.layout.popuplocation,
                     (ViewGroup) findViewById(R.id.popup_element));
 
-            pwindo = new PopupWindow(layout, 600, 230, true);
+            pwindo = new PopupWindow(layout, mWidthPixels-400, mHeightPixels-1550, true);
             pwindo.showAtLocation(layout, Gravity.CENTER, 0, 0);
 
             popsearch = (Button) layout.findViewById(R.id.popsearch);

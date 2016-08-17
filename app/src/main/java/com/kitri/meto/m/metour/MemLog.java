@@ -53,7 +53,7 @@ public class MemLog extends Activity{
                 vId = edtId.getText().toString();
                 vPwd = edtPwd.getText().toString();
 
-                String requestURL =  "http://192.168.14.21:8805/meto/and/member/login.do";
+                String requestURL =  "http://192.168.14.19:8805/meto/and/member/login.do";
 
 
                 //HttpClient client   = new DefaultHttpClient();
@@ -83,8 +83,9 @@ public class MemLog extends Activity{
 
 
                 if(mem_num!=0){
-                    Intent intent = new Intent(getApplicationContext(),SearchByCategory.class);
-                    intent.putExtra("mem_num",mem_num);
+                    //Intent intent = new Intent(getApplicationContext(),SearchByCategory.class);
+                   Intent intent = new Intent(getApplicationContext(),AlarmByDate.class);
+                   intent.putExtra("mem_num",mem_num);
 
                     startActivity(intent);
                     finish();

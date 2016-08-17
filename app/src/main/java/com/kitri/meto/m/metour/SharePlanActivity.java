@@ -2,6 +2,7 @@ package com.kitri.meto.m.metour;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
@@ -121,7 +122,10 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
         StrictMode.setThreadPolicy(policy);
 
         //share_num 받아오기
-        share_num = 9;
+        Intent in = getIntent();
+
+        share_num = Integer.parseInt(in.getStringExtra("share_num"));
+        /*share_num = 9;*/
 
         sview = (LinearLayout)findViewById(R.id.sview);
         shareplan(share_num);
@@ -598,7 +602,6 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
                     });
                 }
 
-
                 repList.addView(layoutSub[i]);
             }
 
@@ -934,13 +937,11 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
             if(btnType == 1){
                 //등록
                 repAdd();
-                Log.d("댓글등록 성공: ", msg);
-
+                Toast.makeText(getApplicationContext(), "댓글이 등록 되었습니다.", Toast.LENGTH_SHORT).show();
             } else if(btnType == 2){
                 //수정
-                Log.d("rep_num ===> ", ""+rep_num);
                 repEdit(num);
-                Log.d("댓글수정 성공: ", msg);
+                Toast.makeText(getApplicationContext(), "댓글이 수정 되었습니다.", Toast.LENGTH_SHORT).show();
                 btnType = 1;
             } else if(btnType == 3){
                 //신고
@@ -955,6 +956,8 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
             repMain.removeAllViews();
             repMain(share_num);
             repList(share_num);
+            repCnt01.setText(""+rCnt);
+            repCnt02.setText("댓글 "+rCnt);
             lay03.setVisibility(View.INVISIBLE);
         } else if(v.getId() == R.id.repAll){
             // 댓글 전체보기

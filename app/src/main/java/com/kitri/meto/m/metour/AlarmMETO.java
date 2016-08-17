@@ -33,6 +33,7 @@ public class AlarmMETO {
             Intent intent = new Intent(context, BroadcastD.class);
             intent.putExtra("title", days.get(i).getMain_title());
             intent.putExtra("main_num", days.get(i).getMain_num());
+            intent.putExtra("mem_num",days.get(i).getMain_writer());
             sender[i] = PendingIntent.getBroadcast(context, days.get(i).getMain_num(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
             /*
