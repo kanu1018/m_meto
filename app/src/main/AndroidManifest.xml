@@ -20,11 +20,7 @@
         <activity android:name=".MemIns">        </activity>
         <activity android:name=".Login_ok"></activity>
         <activity android:name=".MemLog">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".SearchByCategory">
 
@@ -33,7 +29,13 @@
 
         <activity android:name=".SharePlanActivity"></activity>
 
-        <activity android:name=".CreateCalendar"></activity>
+        <activity android:name=".CreateCalendar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".MainPlanAnd"></activity>
         <activity android:name=".MainPlanList"></activity>
         <activity android:name=".ListSubplan"></activity>
