@@ -8,9 +8,11 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -29,19 +31,20 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListSubplan extends Activity {
+public class ToDayListSubplan extends Activity {
     List<SubPlanListDTO> list;
     LinearLayout listSubplan;
     LinearLayout listSubplan_total;
 
     LinearLayout layoutSub[];
+    LinearLayout.LayoutParams layout_1 = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT,1);
 
     Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.listsubplan);
+        setContentView(R.layout.todaylistsubplan);
     }
 
     @Override
@@ -53,9 +56,9 @@ public class ListSubplan extends Activity {
 
         String requestURL = "http://192.168.14.19:8805/meto/and/subplan/list.do";
 
-        listSubplan = (LinearLayout)findViewById(R.id.list_subplan);
+        listSubplan = (LinearLayout)findViewById(R.id.list_subplan1);
         listSubplan.removeAllViewsInLayout();
-        listSubplan_total = (LinearLayout)findViewById(R.id.list_subplan_total);
+        listSubplan_total = (LinearLayout)findViewById(R.id.list_subplan_total1);
 
         intent = getIntent();
         final int mainNum = intent.getExtras().getInt("main_num");
@@ -74,10 +77,15 @@ public class ListSubplan extends Activity {
             final HttpEntity entity = response.getEntity();
             InputStream is = entity.getContent();
             list = getXML(is);
-
+            for (int i=0;i<list.size();i++){
+                Log.d("llh",list.get(i).getLlh_x()+"/"+list.get(i).getLlh_y());
+            }
             layoutSub = new LinearLayout[list.size()];
 
             SubPlanListDTO dto;
+
+            LinearLayout.LayoutParams layout_2= new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT,1);
+
 
             for(int i = 0 ; i < list.size(); i++){
                 dto = list.get(i);
@@ -113,20 +121,21 @@ public class ListSubplan extends Activity {
                 }
                 txtName[4].setText(m);
 
-                txtName[0].setWidth(130);
+                /*txtName[0].setWidth(130);
                 txtName[0].setPadding(0,0,0,0); //(left, top, right, bottom);
-                txtName[1].setWidth(200);
-                txtName[2].setWidth(200);
-                txtName[3].setWidth(200);
-                txtName[4].setWidth(200);
+                txtName[1].setWidth(130);
+                txtName[2].setWidth(130);
+                txtName[3].setWidth(130);
+                txtName[4].setWidth(130);*/
+
 
 
                 for(int j = 0; j < txtName.length; j++){
-                    layoutSub[i].addView(txtName[j]);
+                    layoutSub[i].addView(txtName[j],layout_1);
                 }
 
                 layoutSub[i].setTag(dto.getSub_num());
-                layoutSub[i].setMinimumHeight(150);
+                //layoutSub[i].setMinimumHeight(150);
 
                 layoutSub[i].setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -167,7 +176,29 @@ public class ListSubplan extends Activity {
                         startActivity(intent);
                     }
                 });
-                layoutSub[i].addView(photo);
+                layoutSub[i].addView(photo,layout_1);
+            }
+        }
+
+        for(int i = 0; i < layoutSub.length; i++){
+            final int subNum1 = Integer.parseInt(layoutSub[i].getTag().toString());
+            if(subNum1 != 0){
+                layoutSub[i].setBackgroundResource(R.drawable.line);
+                Button location = new Button(this);
+                location.setText("위치");
+                location.setTag(new LLH(list.get(i).getLlh_x(),list.get(i).getLlh_y()));
+                location.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        /*Intent intent=new Intent(getApplicationContext(),SampleActivity21.class);
+                        intent.putExtra("sub_num",String.valueOf(subNum1));
+                        startActivity(intent);*/
+                        LLH llh = (LLH)v.getTag();
+                        Toast.makeText(getApplicationContext(),"위치 x="+llh.getLlh_x()+"y="+llh.getLlh_y(),Toast.LENGTH_SHORT).show();
+                        ////여기수정하면됨......
+                    }
+                });
+                layoutSub[i].addView(location,layout_1);
             }
         }
     }
@@ -205,6 +236,10 @@ public class ListSubplan extends Activity {
                                 dto.setMission_yn(parser.nextText());
                             }else if(startTag.equals("row")){
                                 dto.setRow(Integer.parseInt(parser.nextText()));
+                            }else if(startTag.equals("llh_x")){
+                                dto.setLlh_x(parser.nextText());
+                            }else if(startTag.equals("llh_y")){
+                                dto.setLlh_y(parser.nextText());
                             }
                         }
                         break;

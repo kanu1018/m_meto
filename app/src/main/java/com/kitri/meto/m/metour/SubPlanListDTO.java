@@ -11,20 +11,35 @@ public class SubPlanListDTO {
     private String mission;
     private String mission_yn;
     private int row;
+    private String llh_x;
+    private String llh_y;
+
 
     public SubPlanListDTO() {
         super();
+        // TODO Auto-generated constructor stub
     }
-    public SubPlanListDTO(int sub_num, String title, String place, String mission, String mission_yn, int row) {
+
+    public SubPlanListDTO(String time, int sub_num, String title, String place, String mission, String mission_yn, int row,
+                       String llh_x, String llh_y) {
         super();
+        this.time = time;
         this.sub_num = sub_num;
         this.title = title;
         this.place = place;
         this.mission = mission;
         this.mission_yn = mission_yn;
         this.row = row;
+        this.llh_x = llh_x;
+        this.llh_y = llh_y;
     }
 
+    public String getTime() {
+        return time;
+    }
+    public void setTime(String time) {
+        this.time = time;
+    }
     public int getSub_num() {
         return sub_num;
     }
@@ -61,11 +76,17 @@ public class SubPlanListDTO {
     public void setRow(int row) {
         this.row = row;
     }
-    public String getTime() {
-        return time;
+    public String getLlh_x() {
+        return llh_x;
     }
-    public void setTime(String time) {
-        this.time = time;
+    public void setLlh_x(String llh_x) {
+        this.llh_x = llh_x;
+    }
+    public String getLlh_y() {
+        return llh_y;
+    }
+    public void setLlh_y(String llh_y) {
+        this.llh_y = llh_y;
     }
 
 }

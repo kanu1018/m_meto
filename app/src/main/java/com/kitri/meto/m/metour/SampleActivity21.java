@@ -1,7 +1,9 @@
 package com.kitri.meto.m.metour;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -31,7 +33,9 @@ public class SampleActivity21 extends Activity {
         txtLon = (TextView) findViewById(R.id.Longitude);
         LocationCompare = (Button)findViewById(R.id.compare_btn);
         txtCompare = (TextView)findViewById(R.id.location_compare);
-
+        Intent intent = getIntent();
+        int sub_num = intent.getIntExtra("sub_num",0);
+        Log.d("sub_num",sub_num+"");
         lat2 = 37.49338041218293;
         lon2 = 126.89423813897454;
         // GPS 정보를 보여주기 위한 이벤트 클래스 등록

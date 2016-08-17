@@ -37,7 +37,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -108,6 +110,47 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
                 startActivity(intent_new);
             }
         });
+
+        Button btnTodayPlan = (Button)findViewById(R.id.moveTodayPlan);
+        btnTodayPlan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int main_num = 0;
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+                //db정보 읽어오기 시작
+
+                Date date = new Date();
+                SimpleDateFormat transFormat = new SimpleDateFormat("yyyy/MM/dd");
+                String to = transFormat.format(date);
+                String requestURL =  "http://192.168.14.19:8805/meto/and/schedule/getMainNum.do?main_writer="+mem_num+"&main_date="+to;
+
+
+                //HttpClient client   = new DefaultHttpClient();
+                HttpClient client   = SessionControl.getHttpclient();
+                HttpPost post    = new HttpPost(requestURL);
+                List<NameValuePair> paramList = new ArrayList<>();
+
+                try {
+                    post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
+                    HttpResponse response = client.execute(post);
+
+                    HttpEntity entity = response.getEntity();
+                    InputStream is = entity.getContent();
+                    main_num = getXMLNum(is);
+                    Log.d("FFFFFFFFFF",Integer.toString(main_num));
+
+                    //Toast.makeText(getApplicationContext(), "flag 확인 "+flag,Toast.LENGTH_SHORT).show();
+                } catch(Exception e) {
+                    Log.d("sendPost===> ", e.toString());
+                }
+
+                Intent intent_new = new Intent(getApplicationContext(), ToDayListSubplan.class);
+                intent_new.putExtra("main_num", main_num);
+                startActivity(intent_new);
+            }
+        });
+
         Button btnMoveShareList = (Button)findViewById(R.id.moveShareList);
         assert btnMoveShareList != null;
         btnMoveShareList.setOnClickListener(new View.OnClickListener() {
@@ -120,7 +163,7 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
             }
         });
 
-        String requestURL = "http://192.168.14.47:8805/meto/and/share/list.do";
+        String requestURL = "http://192.168.14.19:8805/meto/and/share/list.do";
         ArrayList<WebView> weblist = new ArrayList<WebView>();
 
 
@@ -759,5 +802,43 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
             Log.d("SharePlan getXML=====>",e.toString());
         } // end of try
         return list;
+    }
+
+    public int getXMLNum(InputStream is) {
+        int num =0;
+
+        try {
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser parser = factory.newPullParser();
+            parser.setInput(is, "UTF-8");
+
+            int eventType = parser.getEventType();
+
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+
+                        String startTag = parser.getName();
+                        Log.d("STAG",startTag);
+                        if  (startTag.equals("number")) {
+                            num = Integer.parseInt(parser.nextText());
+                        }
+                        break;
+
+                    case XmlPullParser.END_TAG:
+                        String endTag = parser.getName();
+                        Log.d("ETAG",endTag);
+                        if (endTag.equals("start")) {
+                        }
+                        break;
+                } // end
+                eventType = parser.next();
+            } // end of while
+        } catch(Exception e) {
+            Log.d("SelectActivityError",e.toString());
+        } // end of try
+
+        return num;
     }
 }
