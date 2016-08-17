@@ -34,7 +34,7 @@ public class AlarmByDate extends Activity {
     private  static int ONE_MINUTE = 5626;
 
     List<ScheduleDTO> days;
-
+    String ID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +43,7 @@ public class AlarmByDate extends Activity {
         ////////////////////////////////////////////////////
         Intent before = getIntent();
         final int mem_num = before.getIntExtra("mem_num",0);
-
+        Log.d("mem_num찍었엉",mem_num+"");
         ImageView imageView = (ImageView)findViewById(R.id.loading_image);
         AnimationDrawable animationDrawable = (AnimationDrawable)imageView.getBackground();
         animationDrawable.start();
@@ -53,7 +53,8 @@ public class AlarmByDate extends Activity {
 
         String requestURL = "http://192.168.14.19:8805/meto/and/schedule/getDay.do";
 
-        String ID = "1";
+        ID = before.getStringExtra("id");
+        Log.d("id찍었엉",ID);
         try{
             HttpClient client = new DefaultHttpClient();
             //// TODO: 세션유지
@@ -95,6 +96,7 @@ public class AlarmByDate extends Activity {
             public void run() {
                 Intent i = new Intent(AlarmByDate.this, SearchByCategory.class);
                 i.putExtra("mem_num", mem_num);
+                i.putExtra("id", ID);
                 startActivity(i);
                 finish();
             }
