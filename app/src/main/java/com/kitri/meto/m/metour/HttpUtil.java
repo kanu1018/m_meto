@@ -45,9 +45,11 @@ public class HttpUtil extends AsyncTask<String, String, String> {
         String param1Value = params[1].split(":")[1];
         String param2Key = params[2].split(":")[0];
         String param2Value = params[2].split(":")[1];
+        String param3Key = params[3].split(":")[0];
+        String param3Value = params[3].split(":")[1];
         System.out.println("************************************************* 서버 호출 url : " + url);
 
-        paramString = param1Key  + "=" + param1Value + "&" + param2Key  + "=" + param2Value ;
+        paramString = param1Key  + "=" + param1Value + "&" + param2Key  + "=" + param2Value + "&" + param3Key  + "=" + param3Value;
 
         try {
             URL obj = new URL(url + "?" + paramString);
