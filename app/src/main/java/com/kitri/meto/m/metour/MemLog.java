@@ -86,7 +86,7 @@ public class MemLog extends Activity{
                     //Intent intent = new Intent(getApplicationContext(),SearchByCategory.class);
                    Intent intent = new Intent(getApplicationContext(),AlarmByDate.class);
                    intent.putExtra("mem_num",mem_num);
-
+                    intent.putExtra("id", vId);
                     startActivity(intent);
                     finish();
                 } else{
