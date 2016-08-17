@@ -40,20 +40,21 @@
 
 
         <activity android:name=".MemLog">
-
-        </activity>
-
-        <activity android:name=".MainPlanAnd"></activity>
-        <activity android:name=".MainPlanList"></activity>
-        <activity android:name=".ListSubplan"></activity>
-        <activity android:name=".AddSubPlan"></activity>
-        <activity android:name=".EditSubPlan"></activity>
-        <activity android:name=".SelectLocation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".SelectLocation">
+
+        </activity>
+        <activity android:name=".MainPlanAnd"></activity>
+        <activity android:name=".MainPlanList"></activity>
+        <activity android:name=".ListSubplan"></activity>
+        <activity android:name=".AddSubPlan"></activity>
+        <activity android:name=".EditSubPlan"></activity>
+
 
         <receiver android:name=".BroadcastD"></receiver>
     </application>
