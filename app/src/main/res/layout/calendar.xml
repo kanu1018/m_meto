@@ -7,20 +7,21 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.5"
+        android:layout_weight="1.3"
         android:layout_marginTop="2.5dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:background="#282832"
+            android:background="#1abc9c"
             >
             <TextView
                 android:id="@+id/calLastMonth"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="이전달"
+                android:text="◁"
+                android:textSize="30sp"
                 android:gravity="right|center_vertical"
                 android:paddingRight="10dp"
                 android:textColor="#ffffff"/>
@@ -35,21 +36,23 @@
             <TextView
                 android:id="@+id/calNextMonth"
                 android:layout_width="0dp"
+                android:textSize="30sp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="다음달"
+                android:text="▷"
                 android:gravity="left|center_vertical"
                 android:paddingLeft="10dp"
                 android:textColor="#ffffff"/>
         </LinearLayout>
-        <ImageView
+            <ImageView
             android:id="@+id/calendarCloseBtn"
             android:src="@drawable/close_btn"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="right|center_vertical"
             android:paddingRight="15dp"
-            android:textColor="#ffffff"/>
+            android:textColor="#ffffff"
+                android:visibility="gone"/>
     </FrameLayout>
 
     <LinearLayout
@@ -70,10 +73,10 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="일"
-                android:textColor="#ffffff"
+                android:textColor="#ff0000"
                 android:gravity="center"
                 android:textSize="20dp"
-                android:background="#282832"
+                android:background="#1abc9c"
                 android:layout_marginRight="1dp"/>
             <TextView
                 android:layout_width="0dp"
@@ -83,7 +86,7 @@
                 android:textColor="#ffffff"
                 android:gravity="center"
                 android:textSize="20dp"
-                android:background="#282832"
+                android:background="#1abc9c"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"/>
             <TextView
@@ -94,7 +97,7 @@
                 android:textColor="#ffffff"
                 android:gravity="center"
                 android:textSize="20dp"
-                android:background="#282832"
+                android:background="#1abc9c"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"/>
             <TextView
@@ -105,7 +108,7 @@
                 android:textColor="#ffffff"
                 android:gravity="center"
                 android:textSize="20dp"
-                android:background="#282832"
+                android:background="#1abc9c"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"/>
             <TextView
@@ -116,7 +119,7 @@
                 android:textColor="#ffffff"
                 android:gravity="center"
                 android:textSize="20dp"
-                android:background="#282832"
+                android:background="#1abc9c"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"/>
             <TextView
@@ -127,7 +130,7 @@
                 android:textColor="#ffffff"
                 android:gravity="center"
                 android:textSize="20dp"
-                android:background="#282832"
+                android:background="#1abc9c"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"/>
             <TextView
@@ -135,10 +138,10 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="토"
-                android:textColor="#ffffff"
+                android:textColor="#030960"
                 android:gravity="center"
                 android:textSize="20dp"
-                android:background="#282832"
+                android:background="#1abc9c"
                 android:layout_marginLeft="1dp"
                 />
         </LinearLayout>
@@ -631,7 +634,7 @@
             android:textColor="#ffffff"
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
-            android:background="#282832"/>
+            android:background="#1abc9c"/>
         <!--<TextView
             android:id="@+id/calendarShareBtn"
             android:layout_width="0dp"
@@ -642,6 +645,18 @@
             android:layout_marginLeft="1dp"
             android:textColor="#ffffff"
             android:background="#282832"/>-->
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.7">
+        <include
+            android:id="@+id/top"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/main_shareplan_bottom"
+            />
+
     </LinearLayout>
 
 </LinearLayout>

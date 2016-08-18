@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import java.util.Calendar;
 import java.util.List;
@@ -30,6 +31,7 @@ public class AlarmMETO {
         PendingIntent sender[] = new PendingIntent[calendar.size()];
 
         for(int i = 0 ; i < calendar.size(); i++) {
+            Log.d("AlarmMETO","실행");
             Intent intent = new Intent(context, BroadcastD.class);
             intent.putExtra("title", days.get(i).getMain_title());
             intent.putExtra("main_num", days.get(i).getMain_num());

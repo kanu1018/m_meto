@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -36,7 +37,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -107,75 +110,60 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
                 startActivity(intent_new);
             }
         });
-        Button btnMoveShareList = (Button)findViewById(R.id.moveShareList);
-        btnMoveShareList.setOnClickListener(new View.OnClickListener() {
+
+        Button btnTodayPlan = (Button)findViewById(R.id.moveTodayPlan);
+        btnTodayPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listsel.removeAllViews();
-                String requestURL = "http://192.168.14.47:8805/meto/and/share/list.do";
-                ArrayList<WebView> weblist = new ArrayList<WebView>();
+                int main_num = 0;
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+                //db정보 읽어오기 시작
+
+                Date date = new Date();
+                SimpleDateFormat transFormat = new SimpleDateFormat("yyyy/MM/dd");
+                String to = transFormat.format(date);
+                String requestURL =  "http://192.168.14.19:8805/meto/and/schedule/getMainNum.do?main_writer="+mem_num+"&main_date="+to;
 
 
-                HttpClient client   = new DefaultHttpClient();
+                //HttpClient client   = new DefaultHttpClient();
+                HttpClient client   = SessionControl.getHttpclient();
                 HttpPost post    = new HttpPost(requestURL);
-                List<NameValuePair> paramList = new ArrayList<NameValuePair>();
-                SharePlanDTO sDto;
-                List<SharePlanDTO> slist;
+                List<NameValuePair> paramList = new ArrayList<>();
 
                 try {
                     post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
                     HttpResponse response = client.execute(post);
+
                     HttpEntity entity = response.getEntity();
                     InputStream is = entity.getContent();
-                    slist = getXML(is);
-                    LinearLayout laysub[] = new LinearLayout[slist.size()];
+                    main_num = getXMLNum(is);
+                    Log.d("FFFFFFFFFF",Integer.toString(main_num));
 
-
-                    for(int i = 0;i<slist.size();i++){
-                        laysub[i] = new LinearLayout(getApplicationContext());
-                        laysub[i].setOrientation(LinearLayout.VERTICAL);
-                        sDto = slist.get(i);
-                        TextView text1 = new TextView(getApplicationContext());
-                        text1.setText(sDto.getId()+" "+sDto.getPhoto());
-                        WebView wv1 = new WebView(getApplicationContext());
-                        weblist.add(wv1);
-                        wv1.loadUrl(sDto.getPhoto());
-                        wv1.setWebViewClient(new webClient());
-                        WebSettings set = wv1.getSettings();
-                        set.setJavaScriptEnabled(true);
-                        set.setBuiltInZoomControls(true);
-
-                        LinearLayout lay1 = new LinearLayout(getApplicationContext());
-                        lay1.setOrientation(LinearLayout.HORIZONTAL);
-                        TextView text2 = new TextView(getApplicationContext());
-                        text2.setText(sDto.getShare_title());
-                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                                0, LinearLayout.LayoutParams.MATCH_PARENT);
-                        params.weight = 9.0f;
-                        text2.setLayoutParams(params);
-                        TextView text3 = new TextView(getApplicationContext());
-                        params = new LinearLayout.LayoutParams(
-                                0, LinearLayout.LayoutParams.MATCH_PARENT);
-                        params.weight = 1.0f;
-                        params.bottomMargin=30;
-                        text3.setText("♥"+sDto.getMetoo());
-                        text3.setLayoutParams(params);
-
-                        lay1.addView(text2);
-                        lay1.addView(text3);
-                        laysub[i].addView(text1);
-                        laysub[i].addView(wv1);
-                        laysub[i].addView(lay1);
-
-                        listsel.addView(laysub[i]);
-                    }
+                    //Toast.makeText(getApplicationContext(), "flag 확인 "+flag,Toast.LENGTH_SHORT).show();
                 } catch(Exception e) {
                     Log.d("sendPost===> ", e.toString());
                 }
+
+                Intent intent_new = new Intent(getApplicationContext(), ToDayListSubplan.class);
+                intent_new.putExtra("main_num", main_num);
+                startActivity(intent_new);
             }
         });
 
-        String requestURL = "http://192.168.14.47:8805/meto/and/share/list.do";
+        Button btnMoveShareList = (Button)findViewById(R.id.moveShareList);
+        assert btnMoveShareList != null;
+        btnMoveShareList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(getApplicationContext(),SearchByCategory.class);
+                in.putExtra("mem_num",mem_num);
+                startActivity(in);
+
+            }
+        });
+
+        String requestURL = "http://192.168.14.19:8805/meto/and/share/list.do";
         ArrayList<WebView> weblist = new ArrayList<WebView>();
 
 
@@ -199,19 +187,28 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
                 laysub[i].setOrientation(LinearLayout.VERTICAL);
                 sDto = slist.get(i);
                 TextView text1 = new TextView(this);
-                text1.setText(sDto.getId()+" "+sDto.getPhoto());
+                text1.setText(sDto.getId());
                 WebView wv1 = new WebView(this);
                 weblist.add(wv1);
                 wv1.loadUrl(sDto.getPhoto());
                 wv1.setWebViewClient(new webClient());
                 WebSettings set = wv1.getSettings();
+                final SharePlanDTO finalSDto = sDto;
+                wv1.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch (event.getAction()){
+                            case MotionEvent.ACTION_DOWN:
+                                Intent in = new Intent(getApplicationContext(),SharePlanActivity.class);
+                                in.putExtra("share_num",String.valueOf(finalSDto.getShare_num()));
+                                startActivity(in);
+                                break;
+                        }
+                        return false;
+                    }
+                });
                 set.setJavaScriptEnabled(true);
                 set.setBuiltInZoomControls(true);
-                /*wv1.loadUrl("http://192.168.14.47:8805/meto/and/share/webphoto.do?sub_num="+sDto.getSub_num());
-                wv1.setWebViewClient(new webClient());
-                WebSettings set = wv1.getSettings();
-                set.setJavaScriptEnabled(true);
-                set.setBuiltInZoomControls(true);*/
 
                 LinearLayout lay1 = new LinearLayout(this);
                 lay1.setOrientation(LinearLayout.HORIZONTAL);
@@ -228,12 +225,12 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
                 params.bottomMargin=30;
                 text3.setText("♥"+sDto.getMetoo());
                 text3.setLayoutParams(params);
-                final SharePlanDTO finalSDto = sDto;
                 text2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent in = new Intent(getApplicationContext(),SharePlanActivity.class);
                         in.putExtra("share_num",String.valueOf(finalSDto.getShare_num()));
+                        startActivity(in);
                     }
                 });
 
@@ -242,70 +239,12 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
                 laysub[i].addView(text1);
                 laysub[i].addView(wv1);
                 laysub[i].addView(lay1);
-                /*params = (LinearLayout.LayoutParams)laysub[i].getLayoutParams();
-                params.bottomMargin = 10;
-                laysub[i].setLayoutParams(params);*/
-
-
-
-                /*String[] data = new String[6];
-                data[0] =  String.valueOf(sDto.getShare_num());
-                data[1] = sDto.getShare_title();
-                data[2] = String.valueOf(sDto.getWriter());
-                data[3] = sDto.getLocation();
-                data[4] = String.valueOf(sDto.getMetoo());
-                data[5] = String.valueOf(sDto.getPoint_num());
-                for(int j=0;j<6;j++) {
-                    txtName[j] = new TextView(this);
-                    txtName[j].setText(data[j]);
-                    txtName[j].setTextColor(Color.BLACK);
-                    txtName[j].setTextSize(15f);
-                    txtName[j].setWidth(130);
-                    laysub[i].addView(txtName[j]);
-                }*/
 
                 listsel.addView(laysub[i]);
             }
         } catch(Exception e) {
             Log.d("sendPost===> ", e.toString());
         }
-
-        /*wv1.loadUrl("http://192.168.14.47:8805/meto/and/share/webphoto.do?sub_num="+sDto.getSub_num());
-                wv1.setWebViewClient(new webClient());
-                WebSettings set = wv1.getSettings();
-                set.setJavaScriptEnabled(true);
-                set.setBuiltInZoomControls(true);*/
-
-        /*requestURL = "http://192.168.14.47:8805/meto/and/share/list.do";
-
-        client   = new DefaultHttpClient();
-        post    = new HttpPost(requestURL);
-        paramList = new ArrayList<NameValuePair>();
-
-
-        weblist.get(0).loadUrl("");
-        weblist.get(0).setWebViewClient(new webClient());
-        WebSettings set = weblist.get(0).getSettings();
-        set.setJavaScriptEnabled(true);
-        set.setBuiltInZoomControls(true);
-
-        weblist.get(1).loadUrl("http://192.168.14.47:8805/meto/and/share/webphoto.do?sub_num=1");
-        weblist.get(1).setWebViewClient(new webClient());
-        set = weblist.get(1).getSettings();
-        set.setJavaScriptEnabled(true);
-        set.setBuiltInZoomControls(true);*/
-        /*for(int i=0;i<list.size();i++){
-            Log.d("ㅁ",path.get(i)+"");
-            if(path.get(i) != 0) {
-                Log.d("ㅁ",path.get(i)+"");
-                weblist.get(i).loadUrl("http://192.168.14.47:8805/meto/and/share/webphoto.do?sub_num=" + path.get(i));
-                weblist.get(i).setWebViewClient(new webClient());
-                WebSettings set = weblist.get(i).getSettings();
-                set.setJavaScriptEnabled(true);
-                set.setBuiltInZoomControls(true);
-            }
-        }*/
-
     }
 
     @Override
@@ -474,17 +413,32 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
             slist = getXML(is);
             LinearLayout laysub[] = new LinearLayout[slist.size()];
 
+
             for(int i = 0;i<slist.size();i++){
                 laysub[i] = new LinearLayout(this);
                 laysub[i].setOrientation(LinearLayout.VERTICAL);
                 sDto = slist.get(i);
                 TextView text1 = new TextView(this);
-                text1.setText(sDto.getId()+" "+sDto.getPhoto());
+                text1.setText(sDto.getId());
                 WebView wv1 = new WebView(this);
                 weblist.add(wv1);
                 wv1.loadUrl(sDto.getPhoto());
                 wv1.setWebViewClient(new webClient());
                 WebSettings set = wv1.getSettings();
+                final SharePlanDTO finalSDto = sDto;
+                wv1.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch (event.getAction()){
+                            case MotionEvent.ACTION_DOWN:
+                                Intent in = new Intent(getApplicationContext(),SharePlanActivity.class);
+                                in.putExtra("share_num",String.valueOf(finalSDto.getShare_num()));
+                                startActivity(in);
+                                break;
+                        }
+                        return false;
+                    }
+                });
                 set.setJavaScriptEnabled(true);
                 set.setBuiltInZoomControls(true);
 
@@ -503,6 +457,14 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
                 params.bottomMargin=30;
                 text3.setText("♥"+sDto.getMetoo());
                 text3.setLayoutParams(params);
+                text2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent in = new Intent(getApplicationContext(),SharePlanActivity.class);
+                        in.putExtra("share_num",String.valueOf(finalSDto.getShare_num()));
+                        startActivity(in);
+                    }
+                });
 
                 lay1.addView(text2);
                 lay1.addView(text3);
@@ -540,17 +502,32 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
             slist = getXML(is);
             LinearLayout laysub[] = new LinearLayout[slist.size()];
 
+
             for(int i = 0;i<slist.size();i++){
                 laysub[i] = new LinearLayout(this);
                 laysub[i].setOrientation(LinearLayout.VERTICAL);
                 sDto = slist.get(i);
                 TextView text1 = new TextView(this);
-                text1.setText(sDto.getId()+" "+sDto.getPhoto());
+                text1.setText(sDto.getId());
                 WebView wv1 = new WebView(this);
                 weblist.add(wv1);
                 wv1.loadUrl(sDto.getPhoto());
                 wv1.setWebViewClient(new webClient());
                 WebSettings set = wv1.getSettings();
+                final SharePlanDTO finalSDto = sDto;
+                wv1.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch (event.getAction()){
+                            case MotionEvent.ACTION_DOWN:
+                                Intent in = new Intent(getApplicationContext(),SharePlanActivity.class);
+                                in.putExtra("share_num",String.valueOf(finalSDto.getShare_num()));
+                                startActivity(in);
+                                break;
+                        }
+                        return false;
+                    }
+                });
                 set.setJavaScriptEnabled(true);
                 set.setBuiltInZoomControls(true);
 
@@ -569,6 +546,14 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
                 params.bottomMargin=30;
                 text3.setText("♥"+sDto.getMetoo());
                 text3.setLayoutParams(params);
+                text2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent in = new Intent(getApplicationContext(),SharePlanActivity.class);
+                        in.putExtra("share_num",String.valueOf(finalSDto.getShare_num()));
+                        startActivity(in);
+                    }
+                });
 
                 lay1.addView(text2);
                 lay1.addView(text3);
@@ -610,12 +595,26 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
                 laysub[i].setOrientation(LinearLayout.VERTICAL);
                 sDto = slist.get(i);
                 TextView text1 = new TextView(this);
-                text1.setText(sDto.getId()+" "+sDto.getPhoto());
+                text1.setText(sDto.getId());
                 WebView wv1 = new WebView(this);
                 weblist.add(wv1);
                 wv1.loadUrl(sDto.getPhoto());
                 wv1.setWebViewClient(new webClient());
                 WebSettings set = wv1.getSettings();
+                final SharePlanDTO finalSDto = sDto;
+                wv1.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch (event.getAction()){
+                            case MotionEvent.ACTION_DOWN:
+                                Intent in = new Intent(getApplicationContext(),SharePlanActivity.class);
+                                in.putExtra("share_num",String.valueOf(finalSDto.getShare_num()));
+                                startActivity(in);
+                                break;
+                        }
+                        return false;
+                    }
+                });
                 set.setJavaScriptEnabled(true);
                 set.setBuiltInZoomControls(true);
 
@@ -634,6 +633,14 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
                 params.bottomMargin=30;
                 text3.setText("♥"+sDto.getMetoo());
                 text3.setLayoutParams(params);
+                text2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent in = new Intent(getApplicationContext(),SharePlanActivity.class);
+                        in.putExtra("share_num",String.valueOf(finalSDto.getShare_num()));
+                        startActivity(in);
+                    }
+                });
 
                 lay1.addView(text2);
                 lay1.addView(text3);
@@ -675,12 +682,26 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
                 laysub[i].setOrientation(LinearLayout.VERTICAL);
                 sDto = slist.get(i);
                 TextView text1 = new TextView(this);
-                text1.setText(sDto.getId()+" "+sDto.getPhoto());
+                text1.setText(sDto.getId());
                 WebView wv1 = new WebView(this);
                 weblist.add(wv1);
                 wv1.loadUrl(sDto.getPhoto());
                 wv1.setWebViewClient(new webClient());
                 WebSettings set = wv1.getSettings();
+                final SharePlanDTO finalSDto = sDto;
+                wv1.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch (event.getAction()){
+                            case MotionEvent.ACTION_DOWN:
+                                Intent in = new Intent(getApplicationContext(),SharePlanActivity.class);
+                                in.putExtra("share_num",String.valueOf(finalSDto.getShare_num()));
+                                startActivity(in);
+                                break;
+                        }
+                        return false;
+                    }
+                });
                 set.setJavaScriptEnabled(true);
                 set.setBuiltInZoomControls(true);
 
@@ -699,6 +720,14 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
                 params.bottomMargin=30;
                 text3.setText("♥"+sDto.getMetoo());
                 text3.setLayoutParams(params);
+                text2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent in = new Intent(getApplicationContext(),SharePlanActivity.class);
+                        in.putExtra("share_num",String.valueOf(finalSDto.getShare_num()));
+                        startActivity(in);
+                    }
+                });
 
                 lay1.addView(text2);
                 lay1.addView(text3);
@@ -718,58 +747,6 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
             return true;
         }
     }
-    /*public void execute(Context context){
-        this.context = context;
-        LayoutInflater inf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inf.inflate(R.layout.main_shareplan, this, true);
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-        listsel = (LinearLayout)findViewById(R.id.layoutSel);
-
-        ArrayList<SharePlanDTO> list = new ArrayList<SharePlanDTO>();
-        String requestURL = "http://192.168.14.47:8805/meto/and/share/list.do";
-
-        HttpClient client   = new DefaultHttpClient();
-        HttpPost post    = new HttpPost(requestURL);
-        List<NameValuePair> paramList = new ArrayList<NameValuePair>();
-
-        try {
-            post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
-            HttpResponse response = client.execute(post);
-            HttpEntity entity = response.getEntity();
-            InputStream is = entity.getContent();
-            slist = getXML(is);
-
-            LinearLayout laysub[] = new LinearLayout[list.size()];
-            TextView txtName[] = new TextView[7];
-
-            for(int i = 0;i<list.size();i++){
-                sDto = list.get(i);
-                laysub[i] = new LinearLayout(context);
-                laysub[i].setOrientation(LinearLayout.HORIZONTAL);
-                sDto = slist.get(i);
-                share_num = sDto.getShare_num();
-                share_title = sDto.getShare_title();
-                content = sDto.getContent();
-                writer = sDto.getWriter();
-                location = sDto.getLocation();
-                metoo = sDto.getMetoo();
-                point_num = sDto.getPoint_num();
-                for(int j=0;j<7;j++) {
-                    txtName[j] = new TextView(context);
-                    txtName[j].setText(share_num+" "+share_title+" "+content+" "+writer+" "+location+" "+metoo+" "+point_num);
-                    txtName[j].setTextColor(Color.BLACK);
-                    txtName[j].setTextSize(15f);
-                    txtName[j].setWidth(130);
-                    laysub[i].addView(txtName[j]);
-                }
-                listsel.addView(laysub[i]);
-            }
-        } catch(Exception e) {
-            Log.d("sendPost===> ", e.toString());
-        }
-    }*/
 
     public List<SharePlanDTO> getXML(InputStream is) {
         List<SharePlanDTO> list = new ArrayList<SharePlanDTO>();
@@ -825,5 +802,43 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
             Log.d("SharePlan getXML=====>",e.toString());
         } // end of try
         return list;
+    }
+
+    public int getXMLNum(InputStream is) {
+        int num =0;
+
+        try {
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser parser = factory.newPullParser();
+            parser.setInput(is, "UTF-8");
+
+            int eventType = parser.getEventType();
+
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+
+                        String startTag = parser.getName();
+                        Log.d("STAG",startTag);
+                        if  (startTag.equals("number")) {
+                            num = Integer.parseInt(parser.nextText());
+                        }
+                        break;
+
+                    case XmlPullParser.END_TAG:
+                        String endTag = parser.getName();
+                        Log.d("ETAG",endTag);
+                        if (endTag.equals("start")) {
+                        }
+                        break;
+                } // end
+                eventType = parser.next();
+            } // end of while
+        } catch(Exception e) {
+            Log.d("SelectActivityError",e.toString());
+        } // end of try
+
+        return num;
     }
 }

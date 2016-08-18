@@ -207,7 +207,6 @@ public class MainPlanList extends Activity{
                        Intent intent_new = new Intent(MainPlanList.this,ListSubplan.class);
                        intent_new.putExtra("main_num",Integer.parseInt(v.getTag().toString()));
                        startActivity(intent_new);
-
                    }
                });
 
