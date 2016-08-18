@@ -86,6 +86,8 @@
         <!-- GCM 서비스 -->
         <service android:name=".GCMIntentService" />
         <receiver android:name=".BroadcastD"></receiver>
+        <activity android:name=".ToDayListSubplan"></activity>
+        <activity android:name=".SelectLocation"></activity>
     </application>
 
 </manifest>

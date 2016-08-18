@@ -73,19 +73,29 @@ public class GCMIntentService extends IntentService {
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent intent = new Intent(this,CameraActivity.class);
-        int subNum = 42;
+        ///////////////////////////////////////////////////16-08-18
+        String str="";
+        try {
+            str = URLDecoder.decode(extras.getString(TITLE_EXTRA_KEY),"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        //////////////////////////////////////URLDecoder.decode(extras.getString(TITLE_EXTRA_KEY), "UTF-8")
+        String[] strs = str.split("/");
+        int subNum = Integer.parseInt(strs[1]);
+        System.out.println("subNum="+subNum);
         intent.putExtra("sub_num",String.valueOf(subNum));
         /*PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, CameraActivity.class), 0);*/
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                intent, 0);
+                intent, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.Builder mBuilder =
                 null;
         try {
             mBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle(URLDecoder.decode(extras.getString(TITLE_EXTRA_KEY), "UTF-8"))
+                    .setContentTitle(strs[0])
                     .setStyle(new NotificationCompat.BigTextStyle()
                             .bigText(URLDecoder.decode(extras.getString(MSG_EXTRA_KEY), "UTF-8")))
                     .setContentText(URLDecoder.decode(extras.getString(MSG_EXTRA_KEY), "UTF-8"));

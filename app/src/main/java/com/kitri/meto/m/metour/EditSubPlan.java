@@ -76,7 +76,7 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
 
         Log.d("subNum == >", String.valueOf(subNum));
 
-        String requestURL = "http://192.168.14.47:8805/meto/and/subplan/listview.do";
+        String requestURL = "http://192.168.14.45:8805/meto/and/subplan/listview.do";
         try{
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
@@ -118,7 +118,7 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.edit_subplan) {
-            String requestURL = "http://192.168.14.47:8805/meto/and/subplan/edit.do";
+            String requestURL = "http://192.168.14.45:8805/meto/and/subplan/edit.do";
 
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
@@ -159,7 +159,7 @@ public class EditSubPlan extends Activity implements View.OnClickListener {
             finish();
 
         } else if(v.getId() == R.id.edit_subplan_del){
-            String requestURL = "http://192.168.14.47:8805/meto/and/subplan/del.do";
+            String requestURL = "http://192.168.14.45:8805/meto/and/subplan/del.do";
 
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);

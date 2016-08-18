@@ -61,7 +61,7 @@ public class MemEdit extends Activity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        String requestURL =  "http://192.168.14.19:8805/meto/and/member/editForm.do";
+        String requestURL =  "http://192.168.14.45:8805/meto/and/member/editForm.do";
 
         //HttpClient client   = new DefaultHttpClient();
         HttpClient client   = SessionControl.getHttpclient();
@@ -176,7 +176,7 @@ public class MemEdit extends Activity {
                 }
 
                 Toast.makeText(getApplicationContext(),vName+"/"+vId+"/"+vPwd+"/"+vPhone+"/"+vBirth+"/"+vGender,Toast.LENGTH_LONG).show();
-                String requestURL =  "http://192.168.14.19:8805/meto/and/member/edit.do";
+                String requestURL =  "http://192.168.14.45:8805/meto/and/member/edit.do";
                 HttpClient client   = SessionControl.getHttpclient();
                 HttpPost post    = new HttpPost(requestURL);
                 List<NameValuePair> paramList = new ArrayList<>();
@@ -225,7 +225,7 @@ public class MemEdit extends Activity {
         public void onClick(DialogInterface dialog, int which) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
-            String requestURL =  "http://192.168.14.19:8805/meto/and/member/out.do";
+            String requestURL =  "http://192.168.14.45:8805/meto/and/member/out.do";
             HttpClient client   = SessionControl.getHttpclient();
             HttpPost post    = new HttpPost(requestURL);
             try {

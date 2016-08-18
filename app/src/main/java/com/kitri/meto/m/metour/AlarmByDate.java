@@ -51,7 +51,7 @@ public class AlarmByDate extends Activity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        String requestURL = "http://192.168.14.19:8805/meto/and/schedule/getDay.do";
+        String requestURL = "http://192.168.14.45:8805/meto/and/schedule/getDay.do";
 
         ID = before.getStringExtra("id");
         Log.d("id찍었엉",ID);
@@ -82,8 +82,8 @@ public class AlarmByDate extends Activity {
             Calendar tmp = Calendar.getInstance();
             //알람시간 set해주기
             String day[] = days.get(i).getMain_date().split("/");
-            //tmp.set(Integer.parseInt(day[0]),Integer.parseInt(day[1])-1,Integer.parseInt(day[2]),9,0,0); //year, month(1빼줘야해), day, hour(24시간), minute, second
-            tmp.set(2016,7,17,9,0,0); //year, month(1빼줘야해), day, hour(24시간), minute, second
+            tmp.set(Integer.parseInt(day[0]),Integer.parseInt(day[1])-1,Integer.parseInt(day[2]),9,0,0); //year, month(1빼줘야해), day, hour(24시간), minute, second
+            //tmp.set(2016,7,17,9,0,0); //year, month(1빼줘야해), day, hour(24시간), minute, second
             Log.d("시간",tmp.toString());
             calendar.add(tmp);
         }

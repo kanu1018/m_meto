@@ -125,15 +125,16 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
         Intent in = getIntent();
 
         share_num = Integer.parseInt(in.getStringExtra("share_num"));
+        Log.d("share_num===>", share_num+"");
         /*share_num = 9;*/
 
         sview = (LinearLayout)findViewById(R.id.sview);
         shareplan(share_num);
 
         //세션받아오기, mem_num 검색
-        String id = "a@naver.com";
+        String id = "1";
 
-        String requestURL =  "http://192.168.14.30:8805/meto/and/member/select.do?id="+id;
+        String requestURL =  "http://192.168.14.45:8805/meto/and/member/select.do?id="+id;
 
         try {
             HttpClient client   = new DefaultHttpClient();
@@ -158,7 +159,7 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
 
         // 공유글 상세보기
         webView = (WebView)findViewById(R.id.webview);
-        webView.loadUrl("http://192.168.14.30:8805/meto/and/share/content.do?share_num="+share_num);
+        webView.loadUrl("http://192.168.14.45:8805/meto/and/share/content.do?share_num="+share_num);
         webView.setWebViewClient(new webClient());
         WebSettings set = webView.getSettings();
         set.setLoadWithOverviewMode(true);
@@ -474,7 +475,7 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
 
     //공유글 상세보기
     public void shareplan(int share_num){
-        String requestURL =  "http://192.168.14.30:8805/meto/and/share/view2.do?share_num="+share_num;  // url 변경
+        String requestURL =  "http://192.168.14.45:8805/meto/and/share/view2.do?share_num="+share_num;  // url 변경
 
         sview = (LinearLayout)findViewById(R.id.sview);
 
@@ -512,7 +513,7 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
     public String metooYn(int mem_num, int share_num){
         //좋아요 상태에 따라 버튼 다르게 띄우기
 
-        String requestURL =  "http://192.168.14.30:8805/meto/and/metoo/yn.do?mem_num"+mem_num+"&share_num="+share_num;
+        String requestURL =  "http://192.168.14.45:8805/meto/and/metoo/yn.do?mem_num"+mem_num+"&share_num="+share_num;
 
         try {
             HttpClient client   = new DefaultHttpClient();
@@ -548,7 +549,7 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
 
     //댓글 전체 목록
     public void repList(int share_num){
-        String requestURL =  "http://192.168.14.30:8805/meto/and/rep/list.do?share_num="+share_num;  // url 변경
+        String requestURL =  "http://192.168.14.45:8805/meto/and/rep/list.do?share_num="+share_num;  // url 변경
 
         try {
             Log.d("댓글목록", Integer.toString(share_num));
@@ -613,7 +614,7 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
 
     //댓글 최신 10개
     public void repMain(int share_num){
-        String requestURL =  "http://192.168.14.30:8805/meto/and/rep/main.do?share_num="+share_num;  // url 변경
+        String requestURL =  "http://192.168.14.45:8805/meto/and/rep/main.do?share_num="+share_num;  // url 변경
 
         try {
             Log.d("댓글목록 10개", Integer.toString(share_num));
@@ -701,7 +702,7 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
         msg = rEdit.getText().toString();
         Log.d("댓글 내용===> ", msg);
         Toast.makeText(getApplicationContext(), "댓글등록", Toast.LENGTH_SHORT).show();
-        String requestURL =  "http://192.168.14.30:8805/meto/and/rep/add.do";
+        String requestURL =  "http://192.168.14.45:8805/meto/and/rep/add.do";
 
         HttpClient client   = new DefaultHttpClient();
         HttpPost post    = new HttpPost(requestURL);
@@ -724,7 +725,7 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
         Log.d("댓글 수정 번호===> ", ""+rep_num);
         Log.d("댓글 수정 내용===> ", msg);
         Toast.makeText(getApplicationContext(), "댓글수정", Toast.LENGTH_SHORT).show();
-        String requestURL =  "http://192.168.14.30:8805/meto/and/rep/edit.do";
+        String requestURL =  "http://192.168.14.45:8805/meto/and/rep/edit.do";
 
         HttpClient client   = new DefaultHttpClient();
         HttpPost post    = new HttpPost(requestURL);
@@ -744,7 +745,7 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
 
     //댓글 삭제
     public void repDel(int rep_num){
-        String requestURL =  "http://192.168.14.30:8805/meto/and/rep/del.do";
+        String requestURL =  "http://192.168.14.45:8805/meto/and/rep/del.do";
 
         HttpClient client   = new DefaultHttpClient();
         HttpPost post    = new HttpPost(requestURL);
@@ -765,7 +766,7 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
         msg = rEdit.getText().toString();
         Log.d("신고 내용===> ", msg);
         Toast.makeText(getApplicationContext(), "신고 등록", Toast.LENGTH_SHORT).show();
-        String requestURL =  "http://192.168.14.30:8805/meto/and/singo/add.do";
+        String requestURL =  "http://192.168.14.45:8805/meto/and/singo/add.do";
 
         HttpClient client   = new DefaultHttpClient();
         HttpPost post    = new HttpPost(requestURL);
@@ -888,7 +889,7 @@ public class SharePlanActivity extends Activity implements View.OnClickListener{
     public void onClick(View v) {
         if(v.getId() == R.id.like01){
             //좋아요
-            String requestURL =  "http://192.168.14.30:8805/meto/and/metoo/update.do?mem_num="+mem_num+"&share_num="+share_num;
+            String requestURL =  "http://192.168.14.45:8805/meto/and/metoo/update.do?mem_num="+mem_num+"&share_num="+share_num;
 
             int type;
             if(yn.equals("n")){

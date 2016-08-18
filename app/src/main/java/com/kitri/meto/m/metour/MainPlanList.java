@@ -113,7 +113,7 @@ public class MainPlanList extends Activity{
         StrictMode.setThreadPolicy(policy);
 
         try{
-            String requestURL = "http://192.168.14.21:8805/meto/and/schedule/getList.do?main_writer="+main_writer;
+            String requestURL = "http://192.168.14.45:8805/meto/and/schedule/getList.do?main_writer="+main_writer;
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
             List<NameValuePair> paramList = new ArrayList<>();
@@ -155,6 +155,7 @@ public class MainPlanList extends Activity{
 
 
            for (int i=0;i<list.size();i++){
+               main_num = list.get(i).getMain_num();
                layouts[i] = new LinearLayout(this);
                layouts[i].setOrientation(LinearLayout.HORIZONTAL);
                chkbox[i]=new CheckBox(this);
@@ -179,7 +180,7 @@ public class MainPlanList extends Activity{
                btn_C[i].setBackgroundColor(Color.rgb(255,255,255));
 
 
-               main_num = list.get(i).getMain_num();
+
                year = list.get(i).getYear();
                month = list.get(i).getMonth();
                day = list.get(i).getDay();
@@ -309,7 +310,7 @@ public class MainPlanList extends Activity{
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         try{
-            String requestURL = "http://192.168.14.21:8805/meto/and/schedule/deleteMainSchedule.do?main_num="+main_num;
+            String requestURL = "http://192.168.14.45:8805/meto/and/schedule/deleteMainSchedule.do?main_num="+main_num;
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
             List<NameValuePair> paramList = new ArrayList<>();
@@ -329,7 +330,7 @@ public class MainPlanList extends Activity{
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         try{
-            String requestURL = "http://192.168.14.21:8805/meto/and/subplan/combination.do?main_num="+main_num;
+            String requestURL = "http://192.168.14.45:8805/meto/and/subplan/combination.do?main_num="+main_num;
             HttpClient client = SessionControl.getHttpclient();
             //HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);

@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -55,7 +56,6 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
     Intent intent;
     int mem_num;
     int mWidthPixels, mHeightPixels;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,7 +123,7 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
                 Date date = new Date();
                 SimpleDateFormat transFormat = new SimpleDateFormat("yyyy/MM/dd");
                 String to = transFormat.format(date);
-                String requestURL =  "http://192.168.14.19:8805/meto/and/schedule/getMainNum.do?main_writer="+mem_num+"&main_date="+to;
+                String requestURL =  "http://192.168.14.45:8805/meto/and/schedule/getMainNum.do?main_writer="+mem_num+"&main_date="+to;
 
 
                 //HttpClient client   = new DefaultHttpClient();
@@ -144,10 +144,13 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
                 } catch(Exception e) {
                     Log.d("sendPost===> ", e.toString());
                 }
-
-                Intent intent_new = new Intent(getApplicationContext(), ToDayListSubplan.class);
-                intent_new.putExtra("main_num", main_num);
-                startActivity(intent_new);
+                if(main_num!=0) {
+                    Intent intent_new = new Intent(getApplicationContext(), ToDayListSubplan.class);
+                    intent_new.putExtra("main_num", main_num);
+                    startActivity(intent_new);
+                }else{
+                    Toast.makeText(getApplicationContext(), "오늘 일정이 없습니다.",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -163,7 +166,7 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
             }
         });
 
-        String requestURL = "http://192.168.14.19:8805/meto/and/share/list.do";
+        String requestURL = "http://192.168.14.45:8805/meto/and/share/list.do";
         ArrayList<WebView> weblist = new ArrayList<WebView>();
 
 
@@ -395,7 +398,7 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
 
     public void getArticleByAge(int s){
         listsel.removeAllViews();
-        String requestURL =  "http://192.168.14.47:8805/meto/and/share/agelist.do?age="+s;
+        String requestURL =  "http://192.168.14.45:8805/meto/and/share/agelist.do?age="+s;
 
         ArrayList<WebView> weblist = new ArrayList<WebView>();
 
@@ -484,7 +487,7 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
 
     public void getArticleByLocation(String s){
         listsel.removeAllViews();
-        String requestURL =  "http://192.168.14.47:8805/meto/and/share/placelist.do?place="+s;
+        String requestURL =  "http://192.168.14.45:8805/meto/and/share/placelist.do?place="+s;
 
         ArrayList<WebView> weblist = new ArrayList<WebView>();
 
@@ -571,7 +574,7 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
 
     public void getBestArticle(){
         listsel.removeAllViews();
-        String requestURL =  "http://192.168.14.47:8805/meto/and/share/best.do";
+        String requestURL =  "http://192.168.14.45:8805/meto/and/share/best.do";
         ArrayList<WebView> weblist = new ArrayList<WebView>();
 
 
@@ -658,7 +661,7 @@ public class SearchByCategory extends AppCompatActivity implements View.OnClickL
 
     private void getArticleByGender(String s) {
         listsel.removeAllViews();
-        String requestURL =  "http://192.168.14.47:8805/meto/and/share/genderlist.do?gender="+s;
+        String requestURL =  "http://192.168.14.45:8805/meto/and/share/genderlist.do?gender="+s;
         ArrayList<WebView> weblist = new ArrayList<WebView>();
 
 

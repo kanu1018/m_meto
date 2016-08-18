@@ -142,7 +142,7 @@ public class MemIns extends Activity {
                 }
 
                 //Toast.makeText(getApplicationContext(),vName+"/"+vId+"/"+vPwd+"/"+vPhone+"/"+vBirth+"/"+vGender,Toast.LENGTH_LONG).show();
-                String requestURL =  "http://192.168.14.19:8805/meto/and/member/join.do";
+                String requestURL =  "http://192.168.14.45:8805/meto/and/member/join.do";
 
                 HttpClient client   = new DefaultHttpClient();
                 HttpPost post    = new HttpPost(requestURL);

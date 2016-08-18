@@ -104,7 +104,7 @@ public class AddSubPlan extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.add_subplan) {
-            String requestURL = "http://192.168.14.21:8805/meto/and/subplan/addok.do";
+            String requestURL = "http://192.168.14.45:8805/meto/and/subplan/addok.do";
 
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);

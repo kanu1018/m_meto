@@ -30,7 +30,7 @@ public class MainActivity01 extends Activity {
     public static final String PROPERTY_APP_VERSION = "appVersion";
 
     static String SENDER_ID = "1043038372115"; // 프로젝트 아이디
-    static String SERVER_URL = "http://192.168.14.19:8805/meto/gcm/gcmsend11.do"; // 서버 주소
+    static String SERVER_URL = "http://192.168.14.45:8805/meto/gcm/gcmsend11.do"; // 서버 주소
     GoogleCloudMessaging gcm;
     Context context;
     String regid,key,today;

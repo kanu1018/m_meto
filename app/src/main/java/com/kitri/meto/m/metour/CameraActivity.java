@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class CameraActivity extends AppCompatActivity {
-    private String URL_LOAD = "http://192.168.14.19:8805/meto/and/subplan/addphoto.do";
+    private String URL_LOAD = "http://192.168.14.45:8805/meto/and/subplan/addphoto.do";
     private static final String TYPE_IMAGE = "image/*";
     private static final int INPUT_FILE_REQUEST_CODE = 1;
 

@@ -155,7 +155,7 @@ public class CreateCalendar extends Activity implements View.OnClickListener {
 
         try {
 
-            String requestURL = "http://192.168.14.19:8805/meto/and/schedule/getList.do?main_writer="+main_writer;
+            String requestURL = "http://192.168.14.45:8805/meto/and/schedule/getList.do?main_writer="+main_writer;
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(requestURL);
             List<NameValuePair> paramList = new ArrayList<>();

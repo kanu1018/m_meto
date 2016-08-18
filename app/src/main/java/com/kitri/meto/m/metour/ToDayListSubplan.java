@@ -60,7 +60,7 @@ public class ToDayListSubplan extends Activity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        String requestURL = "http://192.168.14.19:8805/meto/and/subplan/list.do";
+        String requestURL = "http://192.168.14.45:8805/meto/and/subplan/list.do";
 
         listSubplan = (LinearLayout)findViewById(R.id.list_subplan1);
         listSubplan.removeAllViewsInLayout();
@@ -141,7 +141,7 @@ public class ToDayListSubplan extends Activity {
                 }
 
                 layoutSub[i].setTag(dto.getSub_num());
-                //layoutSub[i].setMinimumHeight(150);
+                layoutSub[i].setMinimumHeight(150);
 
                 layoutSub[i].setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -235,6 +235,33 @@ public class ToDayListSubplan extends Activity {
                                                 getApplicationContext(),
                                                 "당신의 위치1 - \n위도: " + latitude + "\n경도: " + longitude+"\n 위치비교값:"+calDistance(lat1,lon1,lat2,lon2)+"",
                                                 Toast.LENGTH_LONG).show();
+
+                                        int sub_num = llh.getSub_num();
+
+                                        String requestURL =  "http://192.168.14.45:8805/meto/and/schedule/getGPS.do";
+
+                                        //HttpClient client   = new DefaultHttpClient();
+                                        HttpClient client   = SessionControl.getHttpclient();
+                                        HttpPost post    = new HttpPost(requestURL);
+                                        List<NameValuePair> paramList = new ArrayList<>();
+
+                                        paramList.add(new BasicNameValuePair("sub_num", String.valueOf(sub_num)));
+
+                                        try {
+                                            post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
+                                            HttpResponse response = client.execute(post);
+                                            HttpEntity entity = response.getEntity();
+                                            //Toast.makeText(getApplicationContext(), "flag 확인 "+flag,Toast.LENGTH_SHORT).show();
+
+                                            Log.d("서브넘버 보냈쨔냐 ", ""+sub_num);
+                                        } catch(Exception e) {
+                                            Log.d("sendPost===> ", e.toString());
+                                        }
+                                    } else {
+                                        Toast.makeText(
+                                                getApplicationContext(),
+                                                "당신의 위치에서 500m 사이 거리가 아닙니다.",
+                                                Toast.LENGTH_LONG).show();
                                     }
                                 } else {
                                     // GPS 를 사용할수 없으므로
@@ -257,6 +284,28 @@ public class ToDayListSubplan extends Activity {
                                                 getApplicationContext(),
                                                 "당신의 위치2 - \n위도: " + latitude + "\n경도: " + longitude+"\n 위치비교값:"+calDistance(lat1,lon1,lat2,lon2)+"",
                                                 Toast.LENGTH_LONG).show();
+
+                                        int sub_num = llh.getSub_num();
+
+                                        String requestURL =  "http://192.168.14.45:8805/meto/and/schedule/getGPS.do";
+
+                                        //HttpClient client   = new DefaultHttpClient();
+                                        HttpClient client   = SessionControl.getHttpclient();
+                                        HttpPost post    = new HttpPost(requestURL);
+                                        List<NameValuePair> paramList = new ArrayList<>();
+
+                                        paramList.add(new BasicNameValuePair("sub_num", String.valueOf(sub_num)));
+
+                                        try {
+                                            post.setEntity(new UrlEncodedFormEntity(paramList, "UTF-8"));
+                                            HttpResponse response = client.execute(post);
+                                            HttpEntity entity = response.getEntity();
+                                            //Toast.makeText(getApplicationContext(), "flag 확인 "+flag,Toast.LENGTH_SHORT).show();
+
+                                            Log.d("서브넘버 보냈쨔냐 ", ""+sub_num);
+                                        } catch(Exception e) {
+                                            Log.d("sendPost===> ", e.toString());
+                                        }
                                     }
 
                                 } else {
